@@ -1,7 +1,7 @@
-import { ScreenContent } from 'components/ScreenContent';
 import { StatusBar } from 'expo-status-bar';
 
 import './global.css';
+import { ScreenContent } from './components/ScreenContent';
 
 export default function App() {
   return (
