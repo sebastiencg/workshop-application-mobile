@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "expo": "^53.0.13",
+    "expo-router": "^5.1.1",
+    "expo-splash-screen": "^0.30.9",
     "expo-status-bar": "~2.2.3",
     "nativewind": "latest",
     "react": "19.0.0",
