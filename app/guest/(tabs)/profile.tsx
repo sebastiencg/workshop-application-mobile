@@ -38,14 +38,14 @@ export default function ProfileScreen() {
     const parsed = parseInt(customAmount, 10);
 
     if (!isNaN(parsed) && parsed >= 10) {
-      buyCoins(parsed);
+      confirmBuyCoins(parsed);
       setCustomAmount('');
+      setModalVisible(false);
     } else {
       console.log('Montant invalide');
     }
-
-    setModalVisible(false);
   };
+
 
   const buyCoins = (amount: number) => {
     setModalVisible(false);
@@ -56,6 +56,22 @@ export default function ProfileScreen() {
     setUser(null);
     router.replace('/login');
   };
+  const confirmBuyCoins = (amount: number) => {
+    Alert.alert(
+      'Confirmation d’achat',
+      `Es-tu sûr·e de vouloir acheter ${amount} coins ?`,
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Confirmer',
+          style: 'default',
+          onPress: () => buyCoins(amount),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
 
   const confirmLogout = () => {
     Alert.alert(
@@ -132,7 +148,7 @@ export default function ProfileScreen() {
             <Text style={styles.modalInfo}>1 euro = 10 coins</Text>
 
             {[50, 100, 200, 500].map((amount) => (
-              <Pressable key={amount} onPress={() => buyCoins(amount)} style={styles.amountButton}>
+              <Pressable key={amount} onPress={() => confirmBuyCoins(amount)} style={styles.amountButton}>
                 <Text style={styles.amountText}>{amount} coins</Text>
               </Pressable>
             ))}
