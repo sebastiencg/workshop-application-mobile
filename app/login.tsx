@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import logoImage from '@/assets/images/icon.png'
+import logoImage from '@/assets/images/logo.png'
 import { fetcher, fetcherPost } from '@/services/apiService'
 import { useUser } from '@/contexts/UserContext'
 import { router } from 'expo-router'
@@ -83,7 +83,7 @@ const LoginScreen = () => {
         <Ionicons name="mail-outline" size={20} color="#4d4d4d" style={{ marginHorizontal: 10 }} />
         <TextInput
           style={styles.input}
-          placeholder="VotreEmail@gmail.com"
+          placeholder="exemple@mail.com"
           value={email}
           onChangeText={setEmail}
         />
@@ -97,7 +97,7 @@ const LoginScreen = () => {
         />
         <TextInput
           style={[styles.input, { flex: 1 }]}
-          placeholder="············"
+          placeholder="********"
           secureTextEntry={passwordVisibility}
           value={password}
           onChangeText={setPassword}
@@ -111,9 +111,9 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>Se connecter</Text>
       </TouchableOpacity>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Mot de passe oublié ?</Text>
-      </View>
+      {/*<View style={styles.footer}>*/}
+      {/*  <Text style={styles.footerText}>Mot de passe oublié ?</Text>*/}
+      {/*</View>*/}
     </View>
   )
 }
@@ -123,12 +123,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#D8E7FE',
+    backgroundColor: 'white',
   },
   logo: {
     width: 150,
     height: 150,
-    borderRadius: 75,
     marginBottom: 20,
   },
   inputContainer: {
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   button: {
-    backgroundColor: '#011B46',
+    backgroundColor: '#EB7F15',
     padding: 15,
     borderRadius: 30,
     width: '80%',

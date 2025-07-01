@@ -64,9 +64,15 @@ const CARD_WIDTH = (Dimensions.get('window').width - GAP * 3 - 48) / 2
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { padding: 24, gap: 24, marginTop: 48 },
+  container: {
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    gap: 24,
+    marginTop: 48,
+    backgroundColor: 'white',
+  },
 
-  listContainer: { padding: GAP, marginTop: 24 },
+  listContainer: { padding: 8, marginTop: 24 },
   rowSpace: { justifyContent: 'space-between' },
 
   title: { marginBottom: GAP * 1.5 },
@@ -74,7 +80,6 @@ const styles = StyleSheet.create({
   card: {
     width: CARD_WIDTH,
     marginBottom: GAP * 1.5,
-    alignItems: 'center',
   },
   thumb: {
     width: '100%',
@@ -83,5 +88,5 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: '#ccc',
   },
-  name: { textAlign: 'center', fontSize: 16 },
+  name: { fontSize: 16 },
 })

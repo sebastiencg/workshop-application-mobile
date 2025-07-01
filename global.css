@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+  --color-beige: #fcf6df;
+  --color-orange: #eb7f15;
+}

@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingTop: 40,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   bottomMenu: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FCF6DF',
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#EB7F15',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
