@@ -51,7 +51,7 @@ const LoginScreen = () => {
       await AsyncStorage.setItem('hasSession', 'true');
 
 
-      const user = await fetcher('/user'); // Appel d'une route protégée pour récupérer le user
+      const user = await fetcher('/user');
       setUser(user.data);
 
       Alert.alert('Connexion réussie', 'Bienvenue !');
@@ -61,7 +61,7 @@ const LoginScreen = () => {
       router.replace('/(tabs)');
 
     } catch (error) {
-      //console.error('Erreur de connexion :', error);
+      console.error('Erreur de connexion :', error);
       Alert.alert('Erreur', 'Email ou mot de passe incorrect.');
     }
   };

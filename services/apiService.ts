@@ -15,6 +15,7 @@ export const isTokenExpired = (token: string): boolean => {
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload.exp < Math.floor(Date.now() / 1000);
   } catch (e) {
+    console.error(e);
     return true;
   }
 };
@@ -81,6 +82,7 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
         token = await refreshToken();
       } catch (refreshError) {
         await redirectToLogin();
+        console.error(refreshError);
         //throw refreshError;
       }
     }

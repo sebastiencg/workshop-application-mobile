@@ -31,7 +31,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: true,
+        headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -52,7 +52,7 @@ export default function TabLayout() {
         name="qr-scan"
         options={{
           title: 'Scan QR',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="qrcode" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="qrcode.viewfinder" color={color} />,
         }}
       />
 

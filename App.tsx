@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import './global.css';
 import { ScreenContent } from './components/ScreenContent';
+import React from 'react';
 
 export default function App() {
   return (
