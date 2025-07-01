@@ -47,6 +47,7 @@ app-example
 .expo
 *.orig.*
 web-build/
+bun**
 
 
 

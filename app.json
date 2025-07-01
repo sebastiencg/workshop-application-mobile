@@ -33,6 +33,14 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Locco to access your camera",
+          "microphonePermission": "Allow Locco to access your microphone",
+          "recordAudioAndroid": true
+        }
       ]
     ],
     "experiments": {
