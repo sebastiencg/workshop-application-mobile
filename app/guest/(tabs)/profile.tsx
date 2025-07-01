@@ -50,6 +50,10 @@ export default function ProfileScreen() {
     router.replace('/login');
   };
 
+  const navigateToAdminZone = () => {
+    router.push('/employee/profile'); // Remplacez par la route correcte pour la zone admin
+  };
+
   return (
     <View style={styles.flex}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -67,8 +71,17 @@ export default function ProfileScreen() {
           <ThemedText type="title" style={styles.balanceValue}>
             {balance} coins
           </ThemedText>
-        </ThemedView>
 
+
+        </ThemedView>
+        {/* Bouton pour admin */}
+        {user?.roles.includes('ROLE_Admin') && (
+          <Pressable
+            style={styles.adminButton}
+            onPress={navigateToAdminZone}>
+            <Text style={styles.adminButtonText}>Accéder a l&#39;espace employé</Text>
+          </Pressable>
+        )}
         <ThemedText style={styles.h2}>Tes dernières dépenses</ThemedText>
         {expenses.map((exp) => (
           <ThemedView key={exp.id} style={styles.expenseRow}>
@@ -167,7 +180,24 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_H2,
   },
 
-  /* Bouton  flottant */
+  /* Bouton Admin */
+  adminButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    backgroundColor: '#265d88',
+    alignItems: 'center',
+    borderRadius: 28,
+
+  },
+  adminButtonText: {
+    color: '#fff',
+    fontSize: FONT_SIZE_BODY,
+    fontWeight: '600' ,
+
+  },
+
+  /* Bouton flottant */
   floatingButton: {
     position: 'absolute',
     left: 24,
