@@ -12,15 +12,16 @@ import {
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useRouter } from 'expo-router';
 
 export default function QRScanScreen() {
+  const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedData, setScannedData] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [amountToPay, setAmountToPay] = useState<number>(0);
-  const [userTokens, setUserTokens] = useState<number>(100);
+  const [canEnter, setCanEnter] = useState<boolean>(true);
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false);
-  const [userQrData, setUserQrData] = useState<string>('user123456'); // TODO:implémenter la récup du QRCode de l'user
+  const [userQrData, setUserQrData] = useState<string>('user123456');
   const cameraRef = useRef(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function QRScanScreen() {
   const handleScanned = (barcode: { type: string; data: string }) => {
     if (barcode.data !== scannedData) {
       setScannedData(barcode.data);
-      setAmountToPay(Math.floor(Math.random() * 50) + 10);
+      setCanEnter(true);
       setModalVisible(true);
       console.log(`Scanned ${barcode.type}: ${barcode.data}`);
     }
@@ -41,23 +42,21 @@ export default function QRScanScreen() {
   const resetScanner = () => {
     setScannedData(null);
     setModalVisible(false);
-    setAmountToPay(0);
   };
 
-  const handlePayment = () => {
-    if (userTokens >= amountToPay) {
-      setUserTokens((prevTokens) => prevTokens - amountToPay);
-      Alert.alert(
-        'Succès',
-        `Paiement de ${amountToPay} tokens effectué ! Il vous reste ${userTokens - amountToPay} tokens.`
-      );
-    } else {
-      Alert.alert(
-        'Erreur',
-        `Fonds insuffisants. Vous avez ${userTokens} tokens, mais il faut ${amountToPay} tokens.`
-      );
-    }
+  const handleContinue = () => {
+    Alert.alert('Entrée accordée', "L'utilisateur peut accéder à l'événement.");
     resetScanner();
+  };
+
+  const handleDeny = () => {
+    Alert.alert('Entrée refusée', "L'utilisateur ne peut pas accéder à l'événement.");
+    resetScanner();
+  };
+
+  const navigateToRandomStand = () => {
+    const randomStandId = Math.floor(Math.random() * 3) + 1;
+    router.push(`/employee/stand/${randomStandId}`);
   };
 
   if (!permission) {
@@ -79,7 +78,7 @@ export default function QRScanScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Scanneur de QR Code</Text>
+      <Text style={styles.title}>Billeterie</Text>
       <View style={styles.cameraContainer}>
         <CameraView
           ref={cameraRef}
@@ -103,27 +102,34 @@ export default function QRScanScreen() {
         <TouchableWithoutFeedback onPress={resetScanner}>
           <View style={styles.modalOverlay}>
             <View style={styles.bottomMenu}>
-              <Text style={styles.menuTitle}>Détails du paiement</Text>
-              <Text style={styles.menuText}>Montant à payer : {amountToPay} tokens</Text>
-              <Text style={styles.menuText}>Vos tokens : {userTokens} tokens</Text>
+              <Text style={styles.menuTitle}>Vérification d'entrée</Text>
+              {canEnter ? (
+                <>
+                  <View style={styles.statusContainer}>
+                    <IconSymbol name="checkmark-circle" size={60} color="#4CAF50" />
+                  </View>
+                  <Text style={[styles.menuText, styles.successText]}>Entrée autorisée</Text>
+                  <Text style={styles.menuText}>Ticket valide pour cet événement</Text>
+                </>
+              ) : (
+                <>
+                  <View style={styles.statusContainer}>
+                    <IconSymbol name="close-circle" size={60} color="#F44336" />
+                  </View>
+                  <Text style={[styles.menuText, styles.errorText]}>Entrée refusée</Text>
+                  <Text style={styles.menuText}>Ticket non valide pour cet événement</Text>
+                </>
+              )}
               <View style={styles.menuButtonContainer}>
-                <Button title="Payer" onPress={handlePayment} />
+                <Button title="Confirmer" onPress={handleContinue} color="#4CAF50" />
                 <View style={{ marginTop: 10 }}>
-                  <Button title="Annuler" onPress={resetScanner} color="#FF6347" />
+                  <Button title="Refuser" onPress={handleDeny} color="#FF6347" />
                 </View>
               </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-
-      <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={() => {
-          setQrModalVisible(true);
-        }}>
-        <IconSymbol name="qrcode" size={24} color="#ffffff" />
-      </TouchableOpacity>
 
       <Modal
         animationType="slide"
@@ -145,6 +151,10 @@ export default function QRScanScreen() {
           </TouchableWithoutFeedback>
         </View>
       </Modal>
+
+      <TouchableOpacity style={styles.randomStandButton} onPress={navigateToRandomStand}>
+        <Text style={styles.randomStandButtonText}>Voir un stand au hasard</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -187,6 +197,20 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 10,
   },
+  statusContainer: {
+    marginVertical: 15,
+    alignItems: 'center',
+  },
+  successText: {
+    color: '#4CAF50',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  errorText: {
+    color: '#F44336',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   menuTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -219,6 +243,25 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  randomStandButton: {
+    backgroundColor: '#1e90ff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    margin: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 4,
+  },
+  randomStandButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 
   qrCodeContainer: {

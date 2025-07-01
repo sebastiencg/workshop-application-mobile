@@ -43,17 +43,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="map" color={color} />,
+          title: 'Stands',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="food-bank" color={color} />,
         }}
       />
       <Tabs.Screen
         name="qr-scan"
         options={{
-          title: 'Scan QR',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="qrcode.viewfinder" color={color} />
-          ),
+          title: 'Billeterie',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="ticket.fill" color={color} />,
         }}
       />
       <Tabs.Screen

@@ -184,10 +184,12 @@ const FONT_SIZE_H2 = 18;
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { padding: 24, gap: 24 },
+  container: { padding: 24, gap: 24, marginTop: 48 },
+
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   h2: { fontSize: FONT_SIZE_H2, marginTop: 18 },
 
+  /* Solde */
   balanceCard: {
     padding: 20,
     borderWidth: 1,
@@ -198,6 +200,7 @@ const styles = StyleSheet.create({
   balanceLabel: { marginBottom: 4 },
   balanceValue: { fontSize: 32, fontWeight: '700' },
 
+  /* Dépenses */
   expenseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -225,7 +228,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_BODY,
     fontWeight: '600',
   },
-
+  /* Bouton  flottant */
   floatingButton: {
     position: 'absolute',
     left: 24,
@@ -237,6 +240,7 @@ const styles = StyleSheet.create({
   },
   floatingButtonText: { color: '#fff', fontSize: FONT_SIZE_BODY, fontWeight: '600' },
 
+  /* Modal */
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
