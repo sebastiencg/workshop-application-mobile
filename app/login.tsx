@@ -47,19 +47,18 @@ const LoginScreen = () => {
 
       await AsyncStorage.setItem('token', data.token);
       await AsyncStorage.setItem('refresh_token', data.refresh_token);
-      await AsyncStorage.setItem('refresh_token_expiration', data.refresh_token_expiration.toString());
+      await AsyncStorage.setItem(
+        'refresh_token_expiration',
+        data.refresh_token_expiration.toString()
+      );
       await AsyncStorage.setItem('hasSession', 'true');
-
 
       const user = await fetcher('/user');
       setUser(user.data);
 
       Alert.alert('Connexion réussie', 'Bienvenue !');
 
-
-
       router.replace('/(tabs)');
-
     } catch (error) {
       console.error('Erreur de connexion :', error);
       Alert.alert('Erreur', 'Email ou mot de passe incorrect.');
@@ -83,7 +82,12 @@ const LoginScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" size={20} color="#4d4d4d" style={{ marginHorizontal: 10 }} />
+        <Ionicons
+          name="lock-closed-outline"
+          size={20}
+          color="#4d4d4d"
+          style={{ marginHorizontal: 10 }}
+        />
         <TextInput
           style={[styles.input, { flex: 1 }]}
           placeholder="············"
