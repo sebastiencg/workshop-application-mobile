@@ -50,10 +50,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="qr-scan"
         options={{
-          title: 'Scan QR',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="qrcode.viewfinder" color={color} />
-          ),
+          title: 'Billeterie',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="ticket.fill" color={color} />,
         }}
       />
       <Tabs.Screen
