@@ -55,8 +55,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   backBtn: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    marginTop: 20,
+    backgroundColor: '#265d88',
+    alignItems: 'center',
+    borderRadius: 28,
   },
 });
