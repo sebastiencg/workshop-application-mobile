@@ -1,14 +1,17 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Button,
   Modal,
   StyleSheet,
   Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export default function QRScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -16,6 +19,8 @@ export default function QRScanScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [amountToPay, setAmountToPay] = useState<number>(0);
   const [userTokens, setUserTokens] = useState<number>(100);
+  const [qrModalVisible, setQrModalVisible] = useState<boolean>(false);
+  const [userQrData, setUserQrData] = useState<string>('user123456'); // TODO:implémenter la récup du QRCode de l'user
   const cameraRef = useRef(null);
 
   useEffect(() => {
@@ -111,6 +116,35 @@ export default function QRScanScreen() {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => {
+          setQrModalVisible(true);
+        }}>
+        <IconSymbol name="qrcode" size={24} color="#ffffff" />
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={qrModalVisible}
+        onRequestClose={() => setQrModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.bottomMenu}>
+              <Text style={styles.menuTitle}>Votre QR Code</Text>
+              <View style={styles.qrCodeContainer}>
+                <QRCode value={userQrData} size={200} backgroundColor="white" color="black" />
+              </View>
+              <Text style={styles.menuText}>{userQrData}</Text>
+              <View style={styles.menuButtonContainer}>
+                <Button title="Fermer" onPress={() => setQrModalVisible(false)} color="#FF6347" />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -169,5 +203,36 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     marginTop: 20,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+
+  qrCodeContainer: {
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginVertical: 20,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
