@@ -90,7 +90,7 @@ export default function ProfileScreen() {
   };
 
   const navigateToAdminZone = () => {
-    router.push('/employee/profile');
+    router.push('/employee/(tabs)');
   };
 
   return (

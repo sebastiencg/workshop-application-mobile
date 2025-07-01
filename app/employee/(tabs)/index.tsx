@@ -33,9 +33,10 @@ const stands: Stand[] = [
 ];
 
 export default function HomeScreen() {
-
   const renderItem = ({ item }: { item: Stand }) => (
-    <Pressable style={styles.card} onPress={() => router.navigate('/employee/(tabs)/profile')}>
+    <Pressable
+      style={styles.card}
+      onPress={() => router.push({ pathname: '/employee/stand/[id]', params: { id: item.id } })}>
       <Image source={{ uri: item.img }} style={styles.thumb} />
       <ThemedText style={styles.name}>{item.name}</ThemedText>
     </Pressable>
@@ -43,16 +44,16 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-        <ThemedText type="title">Dans quelle boutique vas‑tu taffer?</ThemedText>
+      <ThemedText type="title">Dans quelle boutique vas‑tu taffer?</ThemedText>
 
-        <FlatList
-          data={stands}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          numColumns={2}
-          contentContainerStyle={styles.listContainer}
-          columnWrapperStyle={styles.rowSpace}
-        />
+      <FlatList
+        data={stands}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        numColumns={2}
+        contentContainerStyle={styles.listContainer}
+        columnWrapperStyle={styles.rowSpace}
+      />
     </View>
   );
 }
