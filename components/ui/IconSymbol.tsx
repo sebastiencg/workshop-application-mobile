@@ -19,10 +19,11 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'qrcode.viewfinder': 'qr-code',
-  qrcode: 'qr-code-scanner',
+  'qrcode': 'qr-code-scanner',
   'face.dashed': 'face',
-  logout: 'logout',
-  map: 'map',
+  'logout': 'logout',
+  'map': 'map',
+  'food-bank': 'food-bank'
 } as IconMapping;
 
 /**
