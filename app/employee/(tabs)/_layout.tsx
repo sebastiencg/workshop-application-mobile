@@ -15,7 +15,6 @@ export default function TabLayout() {
   const { user } = useUser();
   const { loading } = useSessionGuard();
 
-
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
