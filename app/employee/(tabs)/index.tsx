@@ -1,248 +1,85 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity } from 'react-native';
-import MapView, { Marker, LatLng } from 'react-native-maps';
+import React from 'react';
+import { FlatList, Pressable, StyleSheet, View, Image, Dimensions, ScrollView } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { router } from 'expo-router';
 
 type Stand = {
   id: number;
   name: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  image?: string;
+  img: string;
 };
 
 const stands: Stand[] = [
   {
     id: 1,
     name: 'Bar à bières',
-    description: 'Jeune bar à bière aberrant de coiffeur amateur',
-    latitude: 45.7214,
-    longitude: 4.8157,
-    image: 'https://img.icons8.com/?size=150&id=gvSTbbYdFYYL',
+    img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
   },
   {
     id: 2,
     name: 'Stand à la saucisse',
-    description: 'Petit stand entre amis, avec de belles merguez',
-    latitude: 45.7205,
-    longitude: 4.814834,
-    image: 'https://img.icons8.com/?size=150&id=lrb9oiq7i0p9',
+    img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
   },
   {
     id: 3,
     name: 'Goodies et smarties',
-    description: 'Stand de ventes de goodies du festival et de smarties®',
-    latitude: 45.7207,
-    longitude: 4.814834,
-    image: 'https://img.icons8.com/?size=150&id=kLORTzuNOM2d',
-  },
-];
-
-type Concert = {
-  id: number;
-  title: string;
-  horaire: string;
-  latitude: number;
-  longitude: number;
-  image?: string;
-};
-
-const concerts: Concert[] = [
-  {
-    id: 1,
-    title: 'Concert Rock',
-    horaire: '21h00 - 22h30',
-    latitude: 45.7205,
-    longitude: 4.8157,
-    image: 'https://img.icons8.com/?size=150&id=12035',
+    img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
   },
   {
-    id: 2,
-    title: 'DJ Set Electro',
-    horaire: '23h00 - 00h30',
-    latitude: 45.7215,
-    longitude: 4.8149,
-    image: 'https://img.icons8.com/?size=150&id=HfymTjyRCG1f',
+    id: 4,
+    name: 'Goodies et smarties',
+    img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
   },
 ];
 
 export default function HomeScreen() {
-  const mapRef = useRef<MapView>(null);
-  const [selectedStand, setSelectedStand] = useState<Stand | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [showRecenter, setShowRecenter] = useState(false);
-  const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null);
-  const [concertModalVisible, setConcertModalVisible] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      fitAllMarkers();
-    }, 500);
-  }, []);
-
-  const fitAllMarkers = () => {
-    if (!mapRef.current) return;
-    mapRef.current.fitToCoordinates(
-      stands.map((s) => ({ latitude: s.latitude, longitude: s.longitude })),
-      {
-        edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
-        animated: true,
-      }
-    );
-    setShowRecenter(false);
-  };
-
-  const handleMarkerPress = (stand: Stand) => {
-    setSelectedStand(stand);
-    setModalVisible(true);
-  };
-
-  const getDistanceKm = (a: LatLng, b: LatLng): number => {
-    const toRad = (v: number) => (v * Math.PI) / 180;
-    const R = 6371;
-    const dLat = toRad(b.latitude - a.latitude);
-    const dLng = toRad(b.longitude - a.longitude);
-    const lat1 = toRad(a.latitude);
-    const lat2 = toRad(b.latitude);
-    const aVal =
-      Math.sin(dLat / 2) ** 2 + Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
-    const c = 2 * Math.atan2(Math.sqrt(aVal), Math.sqrt(1 - aVal));
-    return R * c;
-  };
-
-  const handleRegionChangeComplete = (region: any) => {
-    const center = {
-      latitude: region.latitude,
-      longitude: region.longitude,
-    };
-    const reference = {
-      latitude: stands.reduce((acc, s) => acc + s.latitude, 0) / stands.length,
-      longitude: stands.reduce((acc, s) => acc + s.longitude, 0) / stands.length,
-    };
-    const dist = getDistanceKm(center, reference);
-    setShowRecenter(dist > 0.5);
-  };
+  const renderItem = ({ item }: { item: Stand }) => (
+    <Pressable style={styles.card} onPress={() => router.navigate('/employee/(tabs)/profile')}>
+      <Image source={{ uri: item.img }} style={styles.thumb} />
+      <ThemedText style={styles.name}>{item.name}</ThemedText>
+    </Pressable>
+  );
 
   return (
     <View style={styles.container}>
-      <MapView
-        ref={mapRef}
-        style={StyleSheet.absoluteFill}
-        onRegionChangeComplete={handleRegionChangeComplete}
-        zoomEnabled
-        scrollEnabled
-        rotateEnabled={false}
-        pitchEnabled={false}>
-        {stands.map((stand) => (
-          <Marker
-            key={stand.id}
-            coordinate={{
-              latitude: stand.latitude,
-              longitude: stand.longitude,
-            }}
-            onPress={() => handleMarkerPress(stand)}
-            image={stand.image ? { uri: stand.image } : undefined}
-          />
-        ))}
-        {concerts.map((concert) => (
-          <Marker
-            key={`concert-${concert.id}`}
-            coordinate={{
-              latitude: concert.latitude,
-              longitude: concert.longitude,
-            }}
-            onPress={() => {
-              setSelectedConcert(concert);
-              setConcertModalVisible(true);
-            }}
-            image={concert.image ? { uri: concert.image } : undefined}
-          />
-        ))}
-      </MapView>
+        <ThemedText type="title">Dans quelle boutique vas‑tu taffer?</ThemedText>
 
-      {showRecenter && (
-        <TouchableOpacity style={styles.recenterButton} onPress={fitAllMarkers}>
-          <Text style={styles.recenterText}>Recentrer</Text>
-        </TouchableOpacity>
-      )}
-
-      <Modal
-        animationType="slide"
-        transparent
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalName}>{selectedStand?.name}</Text>
-            <Text>{selectedStand?.description}</Text>
-            <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeText}>Fermer</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        animationType="slide"
-        transparent
-        visible={concertModalVisible}
-        onRequestClose={() => setConcertModalVisible(false)}>
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalName}>{selectedConcert?.title}</Text>
-            <Text>{selectedConcert?.horaire}</Text>
-            <Pressable style={styles.closeButton} onPress={() => setConcertModalVisible(false)}>
-              <Text style={styles.closeText}>Fermer</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+        <FlatList
+          data={stands}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          numColumns={2}
+          contentContainerStyle={styles.listContainer}
+          columnWrapperStyle={styles.rowSpace}
+        />
     </View>
   );
 }
 
+const GAP = 16;
+const CARD_WIDTH = (Dimensions.get('window').width - GAP * 3 - 48) / 2;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  flex: { flex: 1 },
+  container: { padding: 24, gap: 24, marginTop: 48 },
+
+  listContainer: { padding: GAP, marginTop: 24 },
+  rowSpace: { justifyContent: 'space-between' },
+
+  title: { marginBottom: GAP * 1.5 },
+
+  card: {
+    width: CARD_WIDTH,
+    marginBottom: GAP * 1.5,
+    alignItems: 'center',
   },
-  recenterButton: {
-    position: 'absolute',
-    bottom: 30,
-    right: 20,
-    backgroundColor: '#1e90ff',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    elevation: 4,
-  },
-  recenterText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  modalBackdrop: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    padding: 20,
-  },
-  modalName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  closeButton: {
-    marginTop: 20,
-    alignSelf: 'flex-end',
-    padding: 10,
-    backgroundColor: '#1e90ff',
+  thumb: {
+    width: '100%',
+    aspectRatio: 1,
     borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#ccc',
   },
-  closeText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
+  name: { textAlign: 'center', fontSize: 16 },
 });
