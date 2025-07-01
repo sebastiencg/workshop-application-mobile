@@ -27,7 +27,7 @@ const LoginScreen = () => {
 
   useEffect(() => {
     if (user) {
-      router.replace('/(tabs)');
+      router.replace('/guest/(tabs)');
     }
   }, [user]);
   useEffect(() => {
@@ -58,7 +58,7 @@ const LoginScreen = () => {
 
       Alert.alert('Connexion réussie', 'Bienvenue !');
 
-      router.replace('/(tabs)');
+      router.replace('/guest/(tabs)');
     } catch (error) {
       console.error('Erreur de connexion :', error);
       Alert.alert('Erreur', 'Email ou mot de passe incorrect.');
