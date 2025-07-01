@@ -4,11 +4,14 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUser } from '@/contexts/UserContext';
 
 export default function ProfileScreen() {
   const balance = 42;
   const tabBarHeight = 50; // au pif
   const [customAmount, setCustomAmount] = useState('');
+  const { user, setUser } = useUser();
 
   const [modalVisible, setModalVisible] = useState(false);
 
