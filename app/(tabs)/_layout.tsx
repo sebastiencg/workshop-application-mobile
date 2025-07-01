@@ -13,8 +13,7 @@ import { useSessionGuard } from '@/hooks/useSessionGuard';
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { user } = useUser();
-  const { loading } = useSessionGuard(); //
-
+  const { loading } = useSessionGuard();
 
 
   if (loading) {
