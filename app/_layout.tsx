@@ -11,33 +11,35 @@ import { UserProvider } from '@/contexts/UserContext';
 import React from 'react';
 
 export default function RootLayout() {
-    const colorScheme = useColorScheme();
-    const [loaded] = useFonts({
-        SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    });
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
 
-    if (!loaded) {
-        return null;
-    }
+  if (!loaded) {
+    return null;
+  }
 
   return (
-      <GestureHandlerRootView style={styles.container}>
-        <UserProvider>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-              <Stack.Screen name="login" />
-            </Stack>
-            <StatusBar style="auto" />
-          </ThemeProvider>
-        </UserProvider>
-      </GestureHandlerRootView>
+    <GestureHandlerRootView style={styles.container}>
+      <UserProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="employee" />
+            <Stack.Screen name="guest" />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="login" />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </UserProvider>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+  container: {
+    flex: 1,
+  },
 });
