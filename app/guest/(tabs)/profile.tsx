@@ -38,13 +38,12 @@ export default function ProfileScreen() {
     const parsed = parseInt(customAmount, 10);
 
     if (!isNaN(parsed) && parsed >= 10) {
-      confirmBuyCoins(parsed);
-      setCustomAmount('');
-      setModalVisible(false);
+      confirmBuyCoins(parsed, true); // on signale que c’est un montant personnalisé
     } else {
       console.log('Montant invalide');
     }
   };
+
 
 
   const buyCoins = (amount: number) => {
@@ -56,7 +55,8 @@ export default function ProfileScreen() {
     setUser(null);
     router.replace('/login');
   };
-  const confirmBuyCoins = (amount: number) => {
+
+  const confirmBuyCoins = (amount: number, closeModal: boolean = false) => {
     Alert.alert(
       'Confirmation d’achat',
       `Es-tu sûr·e de vouloir acheter ${amount} coins ?`,
@@ -65,12 +65,17 @@ export default function ProfileScreen() {
         {
           text: 'Confirmer',
           style: 'default',
-          onPress: () => buyCoins(amount),
+          onPress: () => {
+            if (closeModal) setModalVisible(false); // on ferme après confirmation
+            setCustomAmount('');
+            buyCoins(amount);
+          },
         },
       ],
       { cancelable: true }
     );
   };
+
 
 
   const confirmLogout = () => {
