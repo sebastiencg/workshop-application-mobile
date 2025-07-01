@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View, Pressable, Text, Modal, TextInput } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Pressable,
+  Text,
+  Modal,
+  TextInput,
+  Alert,
+} from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { router } from 'expo-router';
@@ -9,7 +18,7 @@ import { useUser } from '@/contexts/UserContext';
 
 export default function ProfileScreen() {
   const balance = 42;
-  const tabBarHeight = 50; // au pif
+  const tabBarHeight = 50;
   const [customAmount, setCustomAmount] = useState('');
   const { user, setUser } = useUser();
 
@@ -40,8 +49,6 @@ export default function ProfileScreen() {
 
   const buyCoins = (amount: number) => {
     setModalVisible(false);
-
-    //fetch
   };
 
   const handleLogout = async () => {
@@ -50,8 +57,24 @@ export default function ProfileScreen() {
     router.replace('/login');
   };
 
+  const confirmLogout = () => {
+    Alert.alert(
+      'Déconnexion',
+      'Es-tu sûr·e de vouloir te déconnecter ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Se déconnecter',
+          style: 'destructive',
+          onPress: handleLogout,
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const navigateToAdminZone = () => {
-    router.push('/employee/profile'); // Remplacez par la route correcte pour la zone admin
+    router.push('/employee/profile');
   };
 
   return (
@@ -59,7 +82,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.inputRow}>
           <ThemedText type="title">Coucou toi</ThemedText>
-          <Pressable onPress={handleLogout}>
+          <Pressable onPress={confirmLogout}>
             <IconSymbol size={28} name="logout" color={'#fff'} />
           </Pressable>
         </View>
@@ -71,17 +94,14 @@ export default function ProfileScreen() {
           <ThemedText type="title" style={styles.balanceValue}>
             {balance} coins
           </ThemedText>
-
-
         </ThemedView>
-        {/* Bouton pour admin */}
+
         {user?.roles.includes('ROLE_Admin') && (
-          <Pressable
-            style={styles.adminButton}
-            onPress={navigateToAdminZone}>
-            <Text style={styles.adminButtonText}>Accéder a l&#39;espace employé</Text>
+          <Pressable style={styles.adminButton} onPress={navigateToAdminZone}>
+            <Text style={styles.adminButtonText}>Accéder à l'espace employé</Text>
           </Pressable>
         )}
+
         <ThemedText style={styles.h2}>Tes dernières dépenses</ThemedText>
         {expenses.map((exp) => (
           <ThemedView key={exp.id} style={styles.expenseRow}>
@@ -149,12 +169,9 @@ const FONT_SIZE_H2 = 18;
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   container: { padding: 24, gap: 24 },
-
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-
   h2: { fontSize: FONT_SIZE_H2, marginTop: 18 },
 
-  /* Solde */
   balanceCard: {
     padding: 20,
     borderWidth: 1,
@@ -165,7 +182,6 @@ const styles = StyleSheet.create({
   balanceLabel: { marginBottom: 4 },
   balanceValue: { fontSize: 32, fontWeight: '700' },
 
-  /* Dépenses */
   expenseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -180,7 +196,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE_H2,
   },
 
-  /* Bouton Admin */
   adminButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -188,16 +203,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#265d88',
     alignItems: 'center',
     borderRadius: 28,
-
   },
   adminButtonText: {
     color: '#fff',
     fontSize: FONT_SIZE_BODY,
-    fontWeight: '600' ,
-
+    fontWeight: '600',
   },
 
-  /* Bouton flottant */
   floatingButton: {
     position: 'absolute',
     left: 24,
@@ -209,7 +221,6 @@ const styles = StyleSheet.create({
   },
   floatingButtonText: { color: '#fff', fontSize: FONT_SIZE_BODY, fontWeight: '600' },
 
-  /* Modal */
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
