@@ -72,7 +72,6 @@ const redirectToLogin = async () => {
   router.replace('/login');
 };
 
-
 const customFetch = async (url: string, options: RequestInit = {}) => {
   try {
     let token = await AsyncStorage.getItem('token');
@@ -126,7 +125,6 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
     console.log('📨 RESPONSE DATA:', responseData);
 
     return responseData;
-
   } catch (error) {
     console.error('💥 customFetch error:', error);
     throw error;
