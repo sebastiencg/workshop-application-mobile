@@ -59,8 +59,7 @@ const LoginScreen = () => {
 
       console.log('handleLogin: Calling fetcher for /profile...')
       const user = await fetcher('/profile/')
-      console.warn('handleLogin: /profile response:', user)
-      if (user !== null) {
+      if (user === null) {
         console.log(
           'handleLogin: User profile returned 401. Removing token and hasSession from AsyncStorage.'
         )
@@ -69,11 +68,7 @@ const LoginScreen = () => {
         throw new Error('User null')
       }
       //todo ajouter ce qui manque en créant un nouveau type
-      setUser({
-        username: 'tibo',
-        roles: ['employee', 'guest', 'ROLE_USER', 'ROLE_Admin'],
-        billet: '123456',
-      })
+      setUser(user)
 
       console.log('handleLogin: Login successful. Redirecting to /guest/(tabs).')
       router.replace('/guest/(tabs)')
