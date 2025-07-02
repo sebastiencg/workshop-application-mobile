@@ -13,12 +13,8 @@ export const isTokenExpired = (token: string): boolean => {
 }
 
 const customFetch = async (url: string, options: RequestInit = {}) => {
-  console.debug('customFetch: Starting request', { url, options })
   try {
     let token = await AsyncStorage.getItem('token')
-    console.debug('customFetch: Token retrieved from AsyncStorage', {
-      token: token ? token : 'absent',
-    })
 
     let headers
     if (!token) {
@@ -26,48 +22,31 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
         'Content-Type': 'application/json',
         ...(options.headers || {}),
       }
-      console.debug('customFetch: Headers (no token)', { headers })
     } else {
       headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.headers || {}),
       }
-      console.debug('customFetch: Headers (with token)', { headers })
     }
 
     const finalUrl = `${BASE_URL}${url}`
-    console.debug('customFetch: Final URL', { finalUrl })
 
     const fetchOptions = {
       ...options,
       headers,
     }
-    console.debug('customFetch: Fetch options', { fetchOptions })
 
     const response = await fetch(finalUrl, fetchOptions)
-    console.debug('customFetch: Response received', {
-      status: response.status,
-      ok: response.ok,
-      url: response.url,
-    })
 
     const responseData = await response.json()
-    console.debug('customFetch: Response data parsed', { responseData })
 
     if (!response.ok) {
-      console.debug('customFetch: Request failed (response not OK)', {
-        status: response.status,
-        statusText: response.statusText,
-        responseData,
-      })
       throw responseData
     }
 
-    console.debug('customFetch: Request successful', { responseData })
     return responseData
   } catch (error) {
-    console.debug('customFetch: Error during fetch', { error })
     throw error
   }
 }
