@@ -26,7 +26,7 @@ const MAPPING = {
   'face.dashed': 'face',
   logout: 'logout',
   map: 'map',
-  'food-bank': 'food-bank'
+  'food-bank': 'food-bank',
 } as IconMapping
 
 /**
