@@ -37,7 +37,6 @@ export default function QRScanScreen() {
       setScannedData(barcode.data)
       setAmountToPay(Math.floor(Math.random() * 50) + 10)
       setModalVisible(true)
-      console.log(`Scanned ${barcode.type}: ${barcode.data}`)
     }
   }
 

@@ -26,7 +26,6 @@ export const useSessionGuard = () => {
           throw new Error('User null')
         }
       } catch (e) {
-        console.warn('Session invalide :', e)
         await AsyncStorage.clear()
         router.replace('/login')
       } finally {

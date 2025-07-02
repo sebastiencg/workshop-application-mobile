@@ -307,7 +307,7 @@ export default function StandDetailScreen() {
                   style={styles.actionButton}
                   onPress={() => handleManageItem(item)}
                 >
-                  <Text style={styles.actionButtonText}>Gérer</Text>
+                  <Text style={styles.actionButtonText}>Voir l'article</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -315,7 +315,6 @@ export default function StandDetailScreen() {
         </ScrollView>
       )}
 
-      {/* Management Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -335,7 +334,6 @@ export default function StandDetailScreen() {
 
             {selectedItem && (
               <View style={styles.modalBody}>
-                {/* Quantity Selector */}
                 <View style={styles.formGroup}>
                   <Text style={styles.formLabel}>Quantité</Text>
                   <View style={styles.quantitySelector}>
@@ -355,7 +353,6 @@ export default function StandDetailScreen() {
                   </View>
                 </View>
 
-                {/* Beer Size Selector (only for beer items) */}
                 {selectedItem.name.toLowerCase().includes('bière') && (
                   <View style={styles.formGroup}>
                     <Text style={styles.formLabel}>Taille</Text>
@@ -390,13 +387,11 @@ export default function StandDetailScreen() {
                   </View>
                 )}
 
-                {/* Total Price */}
                 <View style={styles.priceContainer}>
                   <Text style={styles.priceLabel}>Total:</Text>
                   <Text style={styles.priceValue}>{calculateTotal()} jetons</Text>
                 </View>
 
-                {/* QR Code section */}
                 {showQRCode ? (
                   <View style={styles.qrCodeContainer}>
                     <QRCode
