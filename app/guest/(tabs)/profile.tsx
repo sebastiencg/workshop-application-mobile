@@ -25,6 +25,7 @@ export default function ProfileScreen() {
   const tabBarHeight = 50
   const [customSliderValue, setCustomSliderValue] = useState(100)
   const { user, setUser } = useUser()
+  const [ticketModalVisible, setTicketModalVisible] = useState(false)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
@@ -143,13 +144,23 @@ export default function ProfileScreen() {
         ))}
       </ScrollView>
 
-      <Pressable
-        accessibilityLabel="Acheter des jetons"
-        onPress={showModalForTokenShop}
-        style={[styles.floatingButton, { bottom: tabBarHeight }]}
-      >
-        <Text style={styles.floatingButtonText}>Acheter des jetons</Text>
-      </Pressable>
+      {user?.ticket ? (
+        <Pressable
+          accessibilityLabel="Acheter des jetons"
+          onPress={showModalForTokenShop}
+          style={[styles.floatingButton, { bottom: tabBarHeight }]}
+        >
+          <Text style={styles.floatingButtonText}>Acheter des jetons</Text>
+        </Pressable>
+      ) : (
+        <Pressable
+          accessibilityLabel="Acheter un billet"
+          onPress={() => setTicketModalVisible(true)}
+          style={[styles.floatingButton, { bottom: tabBarHeight }]}
+        >
+          <Text style={styles.floatingButtonText}>Acheter un billet</Text>
+        </Pressable>
+      )}
 
       <Modal
         transparent
@@ -245,6 +256,60 @@ export default function ProfileScreen() {
               >
                 <Text style={styles.buyButtonText}>Acheter {customSliderValue} coins</Text>
               </LinearGradient>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      <Modal
+        transparent
+        animationType="slide"
+        visible={ticketModalVisible}
+        onRequestClose={() => setTicketModalVisible(false)}
+      >
+        <Pressable style={styles.modalBackdrop} onPress={() => setTicketModalVisible(false)}>
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Acheter un billet</Text>
+              <Pressable onPress={() => setTicketModalVisible(false)} style={styles.closeButton}>
+                <IconSymbol size={24} name="xmark" color={'#333'} />
+              </Pressable>
+            </View>
+
+            <View style={styles.ticketCard}>
+              <View style={styles.ticketContent}>
+                <Text style={styles.ticketTitle}>Billet d'entrée</Text>
+                <Text style={styles.ticketDescription}>
+                  Accès complet à l'événement pour toute la durée
+                </Text>
+                <View style={styles.ticketPrice}>
+                  <Text style={styles.priceText}>15€</Text>
+                </View>
+              </View>
+            </View>
+
+            <Pressable
+              style={styles.paymentButton}
+              onPress={() => {
+                setTicketModalVisible(false)
+                Alert.alert(
+                  "Confirmation d'achat",
+                  'Voulez-vous acheter un billet pour 15€ ?',
+                  [
+                    { text: 'Annuler', style: 'cancel' },
+                    {
+                      text: 'Confirmer',
+                      style: 'default',
+                      onPress: () => {
+                        Alert.alert('Achat réussi!', 'Votre billet est maintenant disponible.')
+                      },
+                    },
+                  ],
+                  { cancelable: true }
+                )
+              }}
+            >
+              <Text style={styles.paymentButtonText}>Payer avec une carte bancaire</Text>
             </Pressable>
           </Pressable>
         </Pressable>
@@ -402,6 +467,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 8,
   },
+  amountText: { fontSize: FONT_SIZE_BODY, fontWeight: '500' },
   bonusBadge: {
     backgroundColor: 'rgba(0,0,0,0.5)',
     paddingHorizontal: 8,
@@ -419,6 +485,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#fff',
+    color: 'black',
   },
 
   divider: {
@@ -479,5 +546,68 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
+  },
+  input: {
+    flex: 1,
+    height: INPUT_HEIGHT,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  buyButton: {
+    height: INPUT_HEIGHT,
+    paddingHorizontal: 20,
+    borderBottomEndRadius: BORDER_RADIUS,
+    borderTopEndRadius: BORDER_RADIUS,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  cancelButton: { marginTop: 40, alignItems: 'center' },
+
+  ticketCard: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginVertical: 20,
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+  },
+  ticketContent: {
+    alignItems: 'center',
+  },
+  ticketTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 8,
+  },
+  ticketDescription: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  ticketPrice: {
+    alignItems: 'center',
+  },
+  paymentButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginTop: 24,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  paymentButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 })
