@@ -320,6 +320,8 @@ export default function ProfileScreen() {
 
 const FONT_SIZE_BODY = 16
 const FONT_SIZE_H2 = 18
+const INPUT_HEIGHT = 48
+const BORDER_RADIUS = 8
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -484,7 +486,6 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 18,
     fontWeight: '600',
-    color: '#fff',
     color: 'black',
   },
 
