@@ -95,18 +95,6 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
     const finalUrl = `${BASE_URL}${url}`
     const method = options.method || 'GET'
 
-    // 🔍 Log de la requête
-    console.log('📤 FETCH →', method, finalUrl)
-    if (options.body) {
-      try {
-        const parsedBody = JSON.parse(options.body as string)
-        console.log('📦 PAYLOAD:', parsedBody)
-      } catch {
-        console.log('📦 PAYLOAD (raw):', options.body)
-      }
-    }
-    console.log('🧾 HEADERS:', headers)
-
     const response = await fetch(finalUrl, {
       ...options,
       headers,
@@ -115,14 +103,8 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
     const responseData = await response.json()
 
     if (!response.ok) {
-      console.error('❌ FETCH ERROR:', response.status, response.statusText)
-      console.error('📨 ERROR RESPONSE:', responseData)
       throw responseData
     }
-
-    // ✅ Réponse OK
-    console.log('✅ FETCH SUCCESS:', response.status, response.statusText)
-    console.log('📨 RESPONSE DATA:', responseData)
 
     return responseData
   } catch (error) {

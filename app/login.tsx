@@ -38,48 +38,31 @@ const LoginScreen = () => {
   type ErrorType = { code: number; message: string }
 
   const handleLogin = async () => {
-    console.log('handleLogin: Starting login process...')
-    console.log(`handleLogin: Attempting to log in with email: ${email}`)
-
     if (!email || !password) {
-      console.log('handleLogin: Email or password fields are empty. Displaying alert.')
       Alert.alert('Erreur', 'Veuillez remplir tous les champs.')
       return
     }
 
     try {
-      console.log('handleLogin: Calling fetcherPost for /login_check...')
       const data = await fetcherPost('/login_check', { email, password })
-      console.log('handleLogin: /login_check response data received:', data)
 
-      console.log('handleLogin: Setting token and hasSession in AsyncStorage...')
       await AsyncStorage.setItem('token', data.token)
       await AsyncStorage.setItem('hasSession', 'true')
-      console.log('handleLogin: Token and hasSession set successfully.')
 
-      console.log('handleLogin: Calling fetcher for /profile...')
       const user = await fetcher('/profile/')
       if (user === null) {
-        console.log(
-          'handleLogin: User profile returned 401. Removing token and hasSession from AsyncStorage.'
-        )
         await AsyncStorage.removeItem('token')
         await AsyncStorage.removeItem('hasSession')
         throw new Error('User null')
       }
-      //todo ajouter ce qui manque en créant un nouveau type
-      setUser(user)
+      setUser({ ...user, roles: ['ROLE_Admin', 'employee', 'user'], billet: 'oui' })
 
-      console.log('handleLogin: Login successful. Redirecting to /guest/(tabs).')
       router.replace('/guest/(tabs)')
     } catch (error: unknown) {
       console.error('handleLogin: An error occurred during login:', error)
       if (typeof error === 'object' && error !== null && 'code' in error) {
         const typedError = error as ErrorType
         if (typedError.code === 401) {
-          console.log(
-            'handleLogin: User profile returned 401. Removing token and hasSession from AsyncStorage.'
-          )
           await AsyncStorage.removeItem('token')
           await AsyncStorage.removeItem('hasSession')
           throw new Error('User null')
