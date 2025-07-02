@@ -4,5 +4,4 @@ import React from 'react'
 export default function Index() {
   return <Redirect href="/employee/(tabs)" />
   //return <Redirect href="/guest/(tabs)" />
-
 }

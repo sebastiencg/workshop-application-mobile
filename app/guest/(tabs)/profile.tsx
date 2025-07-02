@@ -138,10 +138,7 @@ export default function ProfileScreen() {
 
         {/* Bouton admin */}
         {user?.roles.includes('ROLE_Admin') && (
-          <Pressable
-            style={styles.adminButton}
-            onPress={() => router.push('/employee/(tabs)')}
-          >
+          <Pressable style={styles.adminButton} onPress={() => router.push('/employee/(tabs)')}>
             <Text style={styles.adminButtonText}>Accéder à l’espace employé</Text>
             <IconSymbol size={20} name="chevron.right" color="#000" />
           </Pressable>
@@ -184,10 +181,7 @@ export default function ProfileScreen() {
             {expenses.map((exp, index) => (
               <ThemedView
                 key={exp.id}
-                style={[
-                  styles.expenseRow,
-                  index === expenses.length - 1 && styles.lastExpenseRow,
-                ]}
+                style={[styles.expenseRow, index === expenses.length - 1 && styles.lastExpenseRow]}
               >
                 <View style={styles.expenseContent}>
                   <View style={styles.leftSection}>
@@ -295,7 +289,10 @@ export default function ProfileScreen() {
               </Text>
             </View>
 
-            <Pressable onPress={() => confirmBuyCoins(customSliderValue)} style={styles.buyCustomButton}>
+            <Pressable
+              onPress={() => confirmBuyCoins(customSliderValue)}
+              style={styles.buyCustomButton}
+            >
               <LinearGradient
                 colors={['#2196F3', '#1976D2'] as any}
                 style={styles.buyButtonGradient}
@@ -522,7 +519,13 @@ const styles = StyleSheet.create({
   slider: { width: '100%', height: 40 },
   sliderLabels: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 },
   sliderValue: { fontWeight: '600', color: '#2196F3' },
-  totalValue: { textAlign: 'center', marginTop: 48, fontSize: 16, fontWeight: '500', color: 'grey' },
+  totalValue: {
+    textAlign: 'center',
+    marginTop: 48,
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'grey',
+  },
 
   buyCustomButton: { height: 50, borderRadius: 25, overflow: 'hidden' },
   buyButtonGradient: { flex: 1, justifyContent: 'center', alignItems: 'center' },
