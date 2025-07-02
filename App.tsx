@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 import './global.css'
 import { ScreenContent } from './components/ScreenContent'

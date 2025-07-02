@@ -15,6 +15,12 @@ import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
+import {
+  initPaymentSheet,
+  presentPaymentSheet,
+  PaymentSheetError,
+} from '@stripe/stripe-react-native';
+import { fetcher, fetcherPost } from "@/services/apiServiceTest";
 
 export default function ProfileScreen() {
   const balance = 42
@@ -23,6 +29,9 @@ export default function ProfileScreen() {
   const { user, setUser } = useUser()
 
   const [modalVisible, setModalVisible] = useState(false)
+
+  const [paymentSheetReady, setPaymentSheetReady] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   const expenses = [
     { id: '1', place: 'Saucisse Bar', amount: 30, time: '14:32' },
@@ -44,9 +53,6 @@ export default function ProfileScreen() {
     }
   }
 
-  const buyCoins = (amount: number) => {
-    setModalVisible(false)
-  }
 
   const handleLogout = async () => {
     await AsyncStorage.clear()
@@ -93,6 +99,99 @@ export default function ProfileScreen() {
   const navigateToAdminZone = () => {
     router.push('/employee/(tabs)')
   }
+
+  const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
+    try {
+      const data = await fetcherPost('/payment-intent', { amountCoins });
+      const { paymentIntent, ephemeralKey, customer } = data;
+
+      const { error: initError } = await initPaymentSheet({
+        merchantDisplayName: 'Saucisse Bar',
+        customerId: customer,
+        customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        allowsDelayedPaymentMethods: false,
+      });
+
+      if (initError) {
+        Alert.alert('Stripe', initError.message);
+        return;
+      }
+
+      setClientSecret(paymentIntent);
+      setPaymentSheetReady(true);
+
+      const { error: presentError } = await presentPaymentSheet({
+        clientSecret: paymentIntent,
+      });
+
+      if (presentError) {
+        if ((presentError as unknown as PaymentSheetError).code !== 'Canceled') {
+          Alert.alert('Échec', presentError.message);
+        }
+      } else {
+        Alert.alert('Succès', 'Paiement effectué !');
+        await fetcher('/coins/credit');
+      }
+    } catch (err: any) {
+      console.error(err);
+      Alert.alert('Stripe', err.message || 'Erreur inconnue');
+    }
+  };
+
+
+  const preparePaymentSheet = async (amountCoins: number): Promise<boolean> => {
+    try {
+      const data = await fetcherPost('/payment-intent', { amountCoins });
+      const { paymentIntent, ephemeralKey, customer } = data;
+
+      const { error } = await initPaymentSheet({
+        merchantDisplayName: 'Saucisse Bar',
+        customerId: customer,
+        customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        allowsDelayedPaymentMethods: false,
+      });
+
+      if (!error) {
+        setClientSecret(paymentIntent);
+        setPaymentSheetReady(true);
+        return true;
+      } else {
+        Alert.alert('Stripe', error.message);
+        return false;
+      }
+    } catch (err: any) {
+      console.log("Stripe Error:", err);
+      Alert.alert('Stripe', err.message || 'Erreur inconnue');
+      return false;
+    }
+  };
+
+  const openPaymentSheet = async () => {
+    if (!clientSecret) return;
+
+    // @ts-ignore
+    const { error } = await presentPaymentSheet({ clientSecret });
+
+    if (error) {
+      if ((error as unknown as PaymentSheetError).code !== "Canceled") {
+        Alert.alert("Échec", error.message);
+      }
+    } else {
+      Alert.alert('Succès', 'Paiement effectué !');
+      //const data = await fetcher('/coins/credit');
+
+
+    }
+  };
+
+  const buyCoins = async (amount: number) => {
+    setModalVisible(false);
+    await prepareAndOpenPaymentSheet(amount);
+  };
+
+
 
   return (
     <View style={styles.flex}>
