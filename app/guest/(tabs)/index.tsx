@@ -89,7 +89,6 @@ export default function HomeScreen() {
   const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
   const [concertModalVisible, setConcertModalVisible] = useState(false)
   const [userPosition, setUserPosition] = useState<LatLng | null>(null)
-
   useEffect(() => {
     setTimeout(() => {
       fitAllMarkers()
