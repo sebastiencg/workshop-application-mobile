@@ -51,7 +51,8 @@ export default function ProfileScreen() {
   /* -------------------------------------------------------------------------- */
   const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
     try {
-      const data = await fetcherPost('/payment-intent', { amountCoins })
+      const amount = amountCoins * 100
+      const data = await fetcherPost('/payment-intent', { amount })
       const { paymentIntent, ephemeralKey, customer } = data
 
       const { error: initError } = await initPaymentSheet({
@@ -93,6 +94,24 @@ export default function ProfileScreen() {
     setUser(null)
     router.replace('/login')
   }
+  const confirmLogout = () => {
+    Alert.alert(
+      'Déconnexion',
+      'Es-tu sûr·e de vouloir te déconnecter ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Confirmer',
+          style: 'default',
+          onPress: () => {
+            handleLogout()
+          },
+        },
+      ],
+      { cancelable: true }
+    )
+  }
+
 
   const confirmBuyCoins = (amount: number) => {
     Alert.alert(
@@ -113,6 +132,26 @@ export default function ProfileScreen() {
     )
   }
 
+  const confirmBuyTicket = () => {
+    Alert.alert(
+      'Confirmation d’achat',
+      'Voulez-vous acheter un billet pour 15 € ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Confirmer',
+          style: 'default',
+          onPress: () => {
+            setTicketModalVisible(false)
+            prepareAndOpenPaymentSheet(15)
+          },
+        },
+      ],
+      { cancelable: true }
+    )
+
+  }
+
   const calculateBonus = (amount: number): number => {
     if (amount < 100) return 0
     if (amount < 200) return Math.floor(amount * 0.1)
@@ -131,7 +170,7 @@ export default function ProfileScreen() {
           <ThemedText type="title" style={styles.h1}>
             Coucou toi
           </ThemedText>
-          <Pressable onPress={handleLogout}>
+          <Pressable onPress={confirmLogout}>
             <IconSymbol size={28} name="logout" color="#000" />
           </Pressable>
         </View>
@@ -334,22 +373,9 @@ export default function ProfileScreen() {
             <Pressable
               style={styles.paymentButton}
               onPress={() => {
-                setTicketModalVisible(false)
-                Alert.alert(
-                  'Confirmation d’achat',
-                  'Voulez-vous acheter un billet pour 15 € ?',
-                  [
-                    { text: 'Annuler', style: 'cancel' },
-                    {
-                      text: 'Confirmer',
-                      style: 'default',
-                      onPress: () => {
-                        Alert.alert('Achat réussi', 'Votre billet est maintenant disponible.')
-                      },
-                    },
-                  ],
-                  { cancelable: true }
-                )
+                confirmBuyTicket()
+
+
               }}
             >
               <Text style={styles.paymentButtonText}>Payer avec une carte bancaire</Text>
