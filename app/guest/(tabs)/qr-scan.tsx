@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import { IconSymbol } from '@/components/ui/IconSymbol'
+import { useUser } from '@/contexts/UserContext'
+import { useNavigation } from '@react-navigation/native'
 
 export default function QRScanScreen() {
   const [permission, requestPermission] = useCameraPermissions()
@@ -20,8 +22,9 @@ export default function QRScanScreen() {
   const [amountToPay, setAmountToPay] = useState<number>(0)
   const [userTokens, setUserTokens] = useState<number>(100)
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
-  const [userQrData, setUserQrData] = useState<string>('user123456') // TODO:implémenter la récup du QRCode de l'user
+  const [userQrData] = useState<string>('user123456') // TODO:implémenter la récup du QRCode de l'user
   const cameraRef = useRef(null)
+  const { user } = useUser()
 
   useEffect(() => {
     if (permission === null) {
@@ -118,14 +121,16 @@ export default function QRScanScreen() {
         </TouchableWithoutFeedback>
       </Modal>
 
-      <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={() => {
-          setQrModalVisible(true)
-        }}
-      >
-        <IconSymbol name="qrcode" size={24} color="#ffffff" />
-      </TouchableOpacity>
+      {user?.billet && (
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={() => {
+            setQrModalVisible(true)
+          }}
+        >
+          <IconSymbol name="qrcode" size={24} color="#ffffff" />
+        </TouchableOpacity>
+      )}
 
       <Modal
         animationType="slide"
