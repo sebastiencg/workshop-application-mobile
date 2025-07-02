@@ -77,8 +77,8 @@ const festivalZone = [
 const FESTIVAL_BOUNDS = {
   north: 45.7222, // latitude max
   south: 45.7192, // latitude min
-  east: 4.8172, // longitude max
-  west: 4.8142, // longitude min
+  east: 4.82, // longitude max
+  west: 4.82, // longitude min
 }
 
 export default function HomeScreen() {
@@ -215,8 +215,8 @@ export default function HomeScreen() {
         )}
         <Polygon
           coordinates={festivalZone}
-          strokeColor="#1e90ff"
-          fillColor="rgba(30, 144, 255, 0.1)"
+          strokeColor="#EB7F15"
+          fillColor="rgba(235, 127, 21, 0.08)"
           strokeWidth={2}
         />
       </MapView>
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 20,
-    backgroundColor: '#1e90ff',
+    backgroundColor: '#EB7F15',
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
@@ -284,7 +284,6 @@ const styles = StyleSheet.create({
   modalBackdrop: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   modalView: {
     backgroundColor: 'white',
@@ -301,7 +300,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: 'flex-end',
     padding: 10,
-    backgroundColor: '#1e90ff',
+    backgroundColor: '#EB7F15',
     borderRadius: 8,
   },
   closeText: {

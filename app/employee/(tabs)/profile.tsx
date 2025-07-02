@@ -19,9 +19,9 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.inputRow}>
-        <ThemedText type="title">Coucou toi</ThemedText>
+        <ThemedText type="title">Profil employé</ThemedText>
         <Pressable onPress={handleLogout}>
-          <IconSymbol size={28} name="logout" color={'#fff'} />
+          <IconSymbol size={28} name="logout" color={'black'} />
         </Pressable>
       </View>
 
@@ -32,7 +32,7 @@ export default function ProfileScreen() {
           }}
           style={styles.backBtn}
         >
-          <ThemedText>Retourner vers l’espace visiteur</ThemedText>
+          <ThemedText style={styles.backBtnText}>Retourner vers l’espace visiteur</ThemedText>
         </Pressable>
       </ThemedView>
     </View>
@@ -40,7 +40,7 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24, gap: 24, marginTop: 48 },
+  container: { padding: 24, gap: 24, marginTop: 48, height: '100%', backgroundColor: 'white' },
   centeredBox: {
     height: Dimensions.get('window').height / 2,
     justifyContent: 'center',
@@ -57,8 +57,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginTop: 20,
-    backgroundColor: '#265d88',
+    backgroundColor: '#EB7F15',
     alignItems: 'center',
     borderRadius: 28,
+  },
+  backBtnText: {
+    color: '#fff',
   },
 })

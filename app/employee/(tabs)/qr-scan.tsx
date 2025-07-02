@@ -23,7 +23,7 @@ export default function QRScanScreen() {
   const [canEnter, setCanEnter] = useState<boolean>(true)
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
   const cameraRef = useRef(null)
-  const user = useUser();
+  const user = useUser()
   const [userQrData] = useState<any>(user)
 
   useEffect(() => {
@@ -144,7 +144,12 @@ export default function QRScanScreen() {
             <View style={styles.bottomMenu}>
               <Text style={styles.menuTitle}>Votre QR Code</Text>
               <View style={styles.qrCodeContainer}>
-                <QRCode value={userQrData.billet.id} size={200} backgroundColor="white" color="black" />
+                <QRCode
+                  value={userQrData.billet.id}
+                  size={200}
+                  backgroundColor="white"
+                  color="black"
+                />
               </View>
               <Text style={styles.menuText}>{userQrData.username}</Text>
               <View style={styles.menuButtonContainer}>
@@ -154,10 +159,6 @@ export default function QRScanScreen() {
           </TouchableWithoutFeedback>
         </View>
       </Modal>
-
-      <TouchableOpacity style={styles.randomStandButton} onPress={navigateToRandomStand}>
-        <Text style={styles.randomStandButtonText}>Voir un stand au hasard</Text>
-      </TouchableOpacity>
     </View>
   )
 }
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingTop: 40,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   bottomMenu: {
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#EB7F15',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
@@ -246,25 +247,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-  },
-  randomStandButton: {
-    backgroundColor: '#1e90ff',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    margin: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 4,
-  },
-  randomStandButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
 
   qrCodeContainer: {
