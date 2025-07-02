@@ -35,6 +35,7 @@ const LoginScreen = () => {
     StatusBar.setBackgroundColor('#D8E7FE')
     StatusBar.setBarStyle('dark-content')
   }, [navigation])
+  type ErrorType = { code: number; message: string }
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -46,21 +47,27 @@ const LoginScreen = () => {
       const data = await fetcherPost('/login_check', { email, password })
 
       await AsyncStorage.setItem('token', data.token)
-      await AsyncStorage.setItem('refresh_token', data.refresh_token)
-      await AsyncStorage.setItem(
-        'refresh_token_expiration',
-        data.refresh_token_expiration.toString()
-      )
       await AsyncStorage.setItem('hasSession', 'true')
 
-      const user = await fetcher('/user')
-      setUser(user.data)
-
-      Alert.alert('Connexion réussie', 'Bienvenue !')
+      const user = await fetcher('/profile/')
+      if (user === null) {
+        await AsyncStorage.removeItem('token')
+        await AsyncStorage.removeItem('hasSession')
+        throw new Error('User null')
+      }
+      setUser({ ...user, roles: ['ROLE_Admin', 'employee', 'user'], billet: 'oui' })
 
       router.replace('/guest/(tabs)')
-    } catch (error) {
-      console.error('Erreur de connexion :', error)
+    } catch (error: unknown) {
+      console.error('handleLogin: An error occurred during login:', error)
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        const typedError = error as ErrorType
+        if (typedError.code === 401) {
+          await AsyncStorage.removeItem('token')
+          await AsyncStorage.removeItem('hasSession')
+          throw new Error('User null')
+        }
+      }
       Alert.alert('Erreur', 'Email ou mot de passe incorrect.')
     }
   }

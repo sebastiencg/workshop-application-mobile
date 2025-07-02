@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import { IconSymbol } from '@/components/ui/IconSymbol'
+import { useUser } from '@/contexts/UserContext'
 
 export default function QRScanScreen() {
   const router = useRouter()
@@ -21,8 +22,9 @@ export default function QRScanScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [canEnter, setCanEnter] = useState<boolean>(true)
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
-  const [userQrData, setUserQrData] = useState<string>('user123456')
   const cameraRef = useRef(null)
+  const user = useUser();
+  const [userQrData] = useState<any>(user)
 
   useEffect(() => {
     if (permission === null) {
@@ -35,7 +37,6 @@ export default function QRScanScreen() {
       setScannedData(barcode.data)
       setCanEnter(true)
       setModalVisible(true)
-      console.log(`Scanned ${barcode.type}: ${barcode.data}`)
     }
   }
 
@@ -143,9 +144,9 @@ export default function QRScanScreen() {
             <View style={styles.bottomMenu}>
               <Text style={styles.menuTitle}>Votre QR Code</Text>
               <View style={styles.qrCodeContainer}>
-                <QRCode value={userQrData} size={200} backgroundColor="white" color="black" />
+                <QRCode value={userQrData.billet.id} size={200} backgroundColor="white" color="black" />
               </View>
-              <Text style={styles.menuText}>{userQrData}</Text>
+              <Text style={styles.menuText}>{userQrData.username}</Text>
               <View style={styles.menuButtonContainer}>
                 <Button title="Fermer" onPress={() => setQrModalVisible(false)} color="#FF6347" />
               </View>

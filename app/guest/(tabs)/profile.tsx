@@ -1,36 +1,35 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Slider from '@react-native-community/slider'
+import {
+  initPaymentSheet,
+  PaymentSheetError,
+  presentPaymentSheet,
+} from '@stripe/stripe-react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
 import {
   Alert,
+  Dimensions,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  Dimensions,
 } from 'react-native'
-import Slider from '@react-native-community/slider'
-import { LinearGradient } from 'expo-linear-gradient'
-
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
-import {
-  initPaymentSheet,
-  presentPaymentSheet,
-  PaymentSheetError,
-} from '@stripe/stripe-react-native'
 import { fetcher, fetcherPost } from '@/services/apiServiceTest'
 
 export default function ProfileScreen() {
   const balance = 42
   const [customSliderValue, setCustomSliderValue] = useState(100)
   const { user, setUser } = useUser()
-
   const [ticketModalVisible, setTicketModalVisible] = useState(false)
+
   const [modalVisible, setModalVisible] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
 
@@ -46,9 +45,6 @@ export default function ProfileScreen() {
     { id: '2', place: 'Saucisse Bar', amount: 25, time: '13:05' },
   ]
 
-  /* -------------------------------------------------------------------------- */
-  /*  Stripe : création + ouverture de la PaymentSheet                          */
-  /* -------------------------------------------------------------------------- */
   const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
     try {
       const amount = amountCoins * 100
@@ -86,9 +82,6 @@ export default function ProfileScreen() {
     }
   }
 
-  /* -------------------------------------------------------------------------- */
-  /*  Helpers et UI                                                             */
-  /* -------------------------------------------------------------------------- */
   const handleLogout = async () => {
     await AsyncStorage.clear()
     setUser(null)
@@ -159,13 +152,9 @@ export default function ProfileScreen() {
     return Math.floor(amount * 0.2)
   }
 
-  /* -------------------------------------------------------------------------- */
-  /*  Render                                                                    */
-  /* -------------------------------------------------------------------------- */
   return (
     <View style={styles.flex}>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* En-tête */}
         <View style={styles.inputRow}>
           <ThemedText type="title" style={styles.h1}>
             Coucou toi
@@ -175,7 +164,6 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* Bouton admin */}
         {user?.roles.includes('ROLE_Admin') && (
           <Pressable style={styles.adminButton} onPress={() => router.push('/employee/(tabs)')}>
             <Text style={styles.adminButtonText}>Accéder à l’espace employé</Text>
@@ -183,7 +171,6 @@ export default function ProfileScreen() {
           </Pressable>
         )}
 
-        {/* Solde ou achat de billet */}
         {user?.ticket ? (
           <ThemedView style={styles.balanceCard}>
             <ThemedText type="subtitle" style={styles.balanceLabel}>
@@ -207,7 +194,6 @@ export default function ProfileScreen() {
           </Pressable>
         )}
 
-        {/* Dépenses */}
         <ThemedText style={styles.h2}>Tes dernières dépenses</ThemedText>
 
         {expenses.length === 0 ? (
@@ -240,7 +226,6 @@ export default function ProfileScreen() {
         )}
       </ScrollView>
 
-      {/* Modal d’achat de coins */}
       <Modal
         transparent
         animationType="slide"
@@ -258,7 +243,6 @@ export default function ProfileScreen() {
 
             <Text style={styles.modalInfo}>1 euro = 10 coins</Text>
 
-            {/* Packs prédéfinis */}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -296,7 +280,6 @@ export default function ProfileScreen() {
 
             <View style={styles.divider} />
 
-            {/* Slider de montant personnalisé */}
             <Text style={styles.customAmountTitle}>Montant personnalisé</Text>
 
             <View style={styles.sliderContainer}>
@@ -345,7 +328,6 @@ export default function ProfileScreen() {
         </Pressable>
       </Modal>
 
-      {/* Modal d’achat de billet */}
       <Modal
         transparent
         animationType="slide"
@@ -387,12 +369,7 @@ export default function ProfileScreen() {
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Styles                                                                    */
-/* -------------------------------------------------------------------------- */
 const FONT_SIZE_BODY = 16
-const INPUT_HEIGHT = 48
-const BORDER_RADIUS = 8
 const SCREEN_WIDTH = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
@@ -516,6 +493,7 @@ const styles = StyleSheet.create({
   /* Cards */
   cardsContainer: { paddingVertical: 8, paddingHorizontal: 4, gap: 10 },
   card: {
+    backgroundColor: 'white',
     width: SCREEN_WIDTH * 0.35,
     height: 160,
     borderRadius: 16,
@@ -535,8 +513,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginVertical: 6,
   },
-  bonusText: { fontSize: 12, fontWeight: '600', color: '#2196F3' },
-  priceText: { color: '#fff', marginTop: 4 },
+
+  bonusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#2196F3',
+  },
+  priceText: {
+    marginTop: 6,
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'black',
+  },
 
   /* Slider */
   divider: { height: 1, backgroundColor: '#e0e0e0', marginVertical: 24 },
