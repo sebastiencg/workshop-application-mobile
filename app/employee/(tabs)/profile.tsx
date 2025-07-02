@@ -1,25 +1,20 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Pressable,
-  Text, Dimensions,
-} from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { router } from 'expo-router';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUser } from '@/contexts/UserContext';
+import React, { useState } from 'react'
+import { StyleSheet, View, Pressable, Text, Dimensions } from 'react-native'
+import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ThemedView'
+import { router } from 'expo-router'
+import { IconSymbol } from '@/components/ui/IconSymbol'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useUser } from '@/contexts/UserContext'
 
 export default function ProfileScreen() {
-  const { user, setUser } = useUser();
+  const { user, setUser } = useUser()
 
   const handleLogout = async () => {
-    await AsyncStorage.clear();
-    setUser(null);
-    router.replace('/login');
-  };
+    await AsyncStorage.clear()
+    setUser(null)
+    router.replace('/login')
+  }
 
   return (
     <View style={styles.container}>
@@ -31,13 +26,17 @@ export default function ProfileScreen() {
       </View>
 
       <ThemedView style={styles.centeredBox}>
-        <Pressable onPress={() => {router.navigate('/guest/(tabs)/profile');}} style={styles.backBtn}>
+        <Pressable
+          onPress={() => {
+            router.navigate('/guest/(tabs)/profile')
+          }}
+          style={styles.backBtn}
+        >
           <ThemedText>Retourner vers l’espace visiteur</ThemedText>
         </Pressable>
       </ThemedView>
-
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -62,4 +61,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 28,
   },
-});
+})

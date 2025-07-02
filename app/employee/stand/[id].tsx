@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   View,
@@ -10,18 +10,18 @@ import {
   Modal,
   SafeAreaView,
   TextInput,
-} from 'react-native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import QRCode from 'react-native-qrcode-svg';
+} from 'react-native'
+import { useLocalSearchParams, useNavigation } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
+import QRCode from 'react-native-qrcode-svg'
 
 type StandItem = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-};
+  id: number
+  name: string
+  description: string
+  price: number
+  image: string
+}
 
 const mockStandItems: Record<string, StandItem[]> = {
   '1': [
@@ -156,16 +156,16 @@ const mockStandItems: Record<string, StandItem[]> = {
       image: 'https://img.icons8.com/?size=150&id=kLORTzuNOM2d',
     },
   ],
-};
+}
 
 type Stand = {
-  id: number;
-  name: string;
-  description: string;
-  latitude?: number;
-  longitude?: number;
-  image?: string;
-};
+  id: number
+  name: string
+  description: string
+  latitude?: number
+  longitude?: number
+  image?: string
+}
 
 const stands: Record<string, Stand> = {
   '1': {
@@ -192,62 +192,62 @@ const stands: Record<string, Stand> = {
     longitude: 4.814834,
     image: 'https://img.icons8.com/?size=150&id=kLORTzuNOM2d',
   },
-};
+}
 
 export default function StandDetailScreen() {
-  const { id } = useLocalSearchParams();
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
-  const [standItems, setStandItems] = useState<StandItem[]>([]);
-  const [stand, setStand] = useState<Stand | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<StandItem | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [beerSize, setBeerSize] = useState('50cl');
-  const [showQRCode, setShowQRCode] = useState(false);
+  const { id } = useLocalSearchParams()
+  const navigation = useNavigation()
+  const [loading, setLoading] = useState(true)
+  const [standItems, setStandItems] = useState<StandItem[]>([])
+  const [stand, setStand] = useState<Stand | null>(null)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<StandItem | null>(null)
+  const [quantity, setQuantity] = useState(1)
+  const [beerSize, setBeerSize] = useState('50cl')
+  const [showQRCode, setShowQRCode] = useState(false)
 
   useEffect(() => {
     setTimeout(() => {
       if (id && typeof id === 'string') {
-        setStand(stands[id]);
-        setStandItems(mockStandItems[id] || []);
+        setStand(stands[id])
+        setStandItems(mockStandItems[id] || [])
       }
-      setLoading(false);
-    }, 500);
-  }, [id]);
+      setLoading(false)
+    }, 500)
+  }, [id])
 
   const handleBackPress = () => {
-    navigation.goBack();
-  };
+    navigation.goBack()
+  }
 
   const handleManageItem = (item: StandItem) => {
-    setSelectedItem(item);
-    setQuantity(1);
-    setBeerSize('50cl');
-    setShowQRCode(false);
-    setModalVisible(true);
-  };
+    setSelectedItem(item)
+    setQuantity(1)
+    setBeerSize('50cl')
+    setShowQRCode(false)
+    setModalVisible(true)
+  }
 
   const handleCloseModal = () => {
-    setModalVisible(false);
-    setSelectedItem(null);
-    setQuantity(1);
-    setBeerSize('50cl');
-    setShowQRCode(false);
-  };
+    setModalVisible(false)
+    setSelectedItem(null)
+    setQuantity(1)
+    setBeerSize('50cl')
+    setShowQRCode(false)
+  }
 
   const handleGenerateQRCode = () => {
-    setShowQRCode(true);
-  };
+    setShowQRCode(true)
+  }
 
   const calculateTotal = () => {
-    if (!selectedItem) return 0;
-    let price = selectedItem.price;
+    if (!selectedItem) return 0
+    let price = selectedItem.price
     if (selectedItem.name.includes('bière') && beerSize === '25cl') {
-      price = price * 0.6;
+      price = price * 0.6
     }
-    return price * quantity;
-  };
+    return price * quantity
+  }
 
   if (loading) {
     return (
@@ -255,7 +255,7 @@ export default function StandDetailScreen() {
         <ActivityIndicator size="large" color="#1e90ff" />
         <Text style={styles.loadingText}>Chargement des articles...</Text>
       </View>
-    );
+    )
   }
 
   if (!stand) {
@@ -266,7 +266,7 @@ export default function StandDetailScreen() {
           <Text style={styles.backButtonText}>Retour</Text>
         </TouchableOpacity>
       </View>
-    );
+    )
   }
 
   return (
@@ -290,7 +290,8 @@ export default function StandDetailScreen() {
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.cardContainer}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           {standItems.map((item) => (
             <View key={item.id} style={styles.card}>
               <View style={styles.cardHeader}>
@@ -304,7 +305,8 @@ export default function StandDetailScreen() {
               <View style={styles.cardFooter}>
                 <TouchableOpacity
                   style={styles.actionButton}
-                  onPress={() => handleManageItem(item)}>
+                  onPress={() => handleManageItem(item)}
+                >
                   <Text style={styles.actionButtonText}>Gérer</Text>
                 </TouchableOpacity>
               </View>
@@ -318,7 +320,8 @@ export default function StandDetailScreen() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={handleCloseModal}>
+        onRequestClose={handleCloseModal}
+      >
         <SafeAreaView style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
@@ -338,13 +341,15 @@ export default function StandDetailScreen() {
                   <View style={styles.quantitySelector}>
                     <TouchableOpacity
                       style={styles.quantityButton}
-                      onPress={() => setQuantity(Math.max(1, quantity - 1))}>
+                      onPress={() => setQuantity(Math.max(1, quantity - 1))}
+                    >
                       <Text style={styles.quantityButtonText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.quantityText}>{quantity}</Text>
                     <TouchableOpacity
                       style={styles.quantityButton}
-                      onPress={() => setQuantity(quantity + 1)}>
+                      onPress={() => setQuantity(quantity + 1)}
+                    >
                       <Text style={styles.quantityButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
@@ -357,23 +362,27 @@ export default function StandDetailScreen() {
                     <View style={styles.sizeSelector}>
                       <TouchableOpacity
                         style={[styles.sizeButton, beerSize === '25cl' && styles.selectedSize]}
-                        onPress={() => setBeerSize('25cl')}>
+                        onPress={() => setBeerSize('25cl')}
+                      >
                         <Text
                           style={[
                             styles.sizeButtonText,
                             beerSize === '25cl' && styles.selectedSizeText,
-                          ]}>
+                          ]}
+                        >
                           25cl
                         </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.sizeButton, beerSize === '50cl' && styles.selectedSize]}
-                        onPress={() => setBeerSize('50cl')}>
+                        onPress={() => setBeerSize('50cl')}
+                      >
                         <Text
                           style={[
                             styles.sizeButtonText,
                             beerSize === '50cl' && styles.selectedSizeText,
-                          ]}>
+                          ]}
+                        >
                           50cl
                         </Text>
                       </TouchableOpacity>
@@ -411,7 +420,7 @@ export default function StandDetailScreen() {
         </SafeAreaView>
       </Modal>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -667,4 +676,4 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
-});
+})

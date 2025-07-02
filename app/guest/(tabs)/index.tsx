@@ -1,16 +1,16 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Modal, Pressable, TouchableOpacity } from 'react-native';
-import MapView, { Marker, LatLng, Polygon } from 'react-native-maps';
-import * as Location from 'expo-location';
+import * as Location from 'expo-location'
+import React, { useEffect, useRef, useState } from 'react'
+import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import MapView, { LatLng, Marker, Polygon } from 'react-native-maps'
 
 type Stand = {
-  id: number;
-  name: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  image?: string;
-};
+  id: number
+  name: string
+  description: string
+  latitude: number
+  longitude: number
+  image?: string
+}
 
 const stands: Stand[] = [
   {
@@ -37,16 +37,16 @@ const stands: Stand[] = [
     longitude: 4.814834,
     image: 'https://img.icons8.com/?size=150&id=kLORTzuNOM2d',
   },
-];
+]
 
 type Concert = {
-  id: number;
-  title: string;
-  horaire: string;
-  latitude: number;
-  longitude: number;
-  image?: string;
-};
+  id: number
+  title: string
+  horaire: string
+  latitude: number
+  longitude: number
+  image?: string
+}
 
 const concerts: Concert[] = [
   {
@@ -65,45 +65,45 @@ const concerts: Concert[] = [
     longitude: 4.8149,
     image: 'https://img.icons8.com/?size=150&id=HfymTjyRCG1f',
   },
-];
+]
 
 const festivalZone = [
   { latitude: 45.7218, longitude: 4.81455 }, // coin haut gauche
   { latitude: 45.7218, longitude: 4.816 }, // coin haut droit
   { latitude: 45.7202, longitude: 4.816 }, // coin bas droit
   { latitude: 45.7202, longitude: 4.81455 }, // coin bas gauche
-];
+]
 
 const FESTIVAL_BOUNDS = {
   north: 45.7222, // latitude max
   south: 45.7192, // latitude min
   east: 4.8172, // longitude max
   west: 4.8142, // longitude min
-};
+}
 
 export default function HomeScreen() {
-  const mapRef = useRef<MapView>(null);
-  const [selectedStand, setSelectedStand] = useState<Stand | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [showRecenter, setShowRecenter] = useState(false);
-  const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null);
-  const [concertModalVisible, setConcertModalVisible] = useState(false);
-  const [userPosition, setUserPosition] = useState<LatLng | null>(null);
+  const mapRef = useRef<MapView>(null)
+  const [selectedStand, setSelectedStand] = useState<Stand | null>(null)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [showRecenter, setShowRecenter] = useState(false)
+  const [selectedConcert, setSelectedConcert] = useState<Concert | null>(null)
+  const [concertModalVisible, setConcertModalVisible] = useState(false)
+  const [userPosition, setUserPosition] = useState<LatLng | null>(null)
 
   useEffect(() => {
     setTimeout(() => {
-      fitAllMarkers();
-    }, 500);
-  }, []);
+      fitAllMarkers()
+    }, 500)
+  }, [])
 
   useEffect(() => {
-    let locationSubscription: Location.LocationSubscription;
+    let locationSubscription: Location.LocationSubscription
 
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
+    ;(async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
-        console.warn("La permission n'est pas accordée");
-        return;
+        console.warn("La permission n'est pas accordée")
+        return
       }
 
       locationSubscription = await Location.watchPositionAsync(
@@ -116,54 +116,54 @@ export default function HomeScreen() {
           setUserPosition({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-          });
+          })
         }
-      );
-    })();
+      )
+    })()
 
     return () => {
-      locationSubscription?.remove();
-    };
-  }, []);
+      locationSubscription?.remove()
+    }
+  }, [])
 
   const fitAllMarkers = () => {
-    if (!mapRef.current) return;
+    if (!mapRef.current) return
     mapRef.current.fitToCoordinates(
       stands.map((s) => ({ latitude: s.latitude, longitude: s.longitude })),
       {
         edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
         animated: true,
       }
-    );
-    setShowRecenter(false);
-  };
+    )
+    setShowRecenter(false)
+  }
 
   const handleMarkerPress = (stand: Stand) => {
-    setSelectedStand(stand);
-    setModalVisible(true);
-  };
+    setSelectedStand(stand)
+    setModalVisible(true)
+  }
 
   const handleRegionChangeComplete = (region: any) => {
-    const lat = region.latitude;
-    const lng = region.longitude;
-    const latDelta = region.latitudeDelta;
-    const lngDelta = region.longitudeDelta;
+    const lat = region.latitude
+    const lng = region.longitude
+    const latDelta = region.latitudeDelta
+    const lngDelta = region.longitudeDelta
 
-    const northEdge = lat + latDelta / 2;
-    const southEdge = lat - latDelta / 2;
-    const eastEdge = lng + lngDelta / 2;
-    const westEdge = lng - lngDelta / 2;
+    const northEdge = lat + latDelta / 2
+    const southEdge = lat - latDelta / 2
+    const eastEdge = lng + lngDelta / 2
+    const westEdge = lng - lngDelta / 2
 
     const outOfBounds =
       northEdge > FESTIVAL_BOUNDS.north ||
       southEdge < FESTIVAL_BOUNDS.south ||
       eastEdge > FESTIVAL_BOUNDS.east ||
-      westEdge < FESTIVAL_BOUNDS.west;
+      westEdge < FESTIVAL_BOUNDS.west
 
     if (outOfBounds) {
-      fitAllMarkers();
+      fitAllMarkers()
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -174,7 +174,8 @@ export default function HomeScreen() {
         zoomEnabled
         scrollEnabled
         rotateEnabled={false}
-        pitchEnabled={false}>
+        pitchEnabled={false}
+      >
         {stands.map((stand) => (
           <Marker
             key={stand.id}
@@ -194,8 +195,8 @@ export default function HomeScreen() {
               longitude: concert.longitude,
             }}
             onPress={() => {
-              setSelectedConcert(concert);
-              setConcertModalVisible(true);
+              setSelectedConcert(concert)
+              setConcertModalVisible(true)
             }}
             image={concert.image ? { uri: concert.image } : undefined}
           />
@@ -232,7 +233,8 @@ export default function HomeScreen() {
         animationType="slide"
         transparent
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalView}>
             <Text style={styles.modalName}>{selectedStand?.name}</Text>
@@ -247,7 +249,8 @@ export default function HomeScreen() {
         animationType="slide"
         transparent
         visible={concertModalVisible}
-        onRequestClose={() => setConcertModalVisible(false)}>
+        onRequestClose={() => setConcertModalVisible(false)}
+      >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalView}>
             <Text style={styles.modalName}>{selectedConcert?.title}</Text>
@@ -259,7 +262,7 @@ export default function HomeScreen() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -307,4 +310,4 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-});
+})

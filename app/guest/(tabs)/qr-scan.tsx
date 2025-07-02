@@ -1,5 +1,5 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { useEffect, useRef, useState } from 'react';
+import { CameraView, useCameraPermissions } from 'expo-camera'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Alert,
   Button,
@@ -9,63 +9,63 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+} from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
+import { IconSymbol } from '@/components/ui/IconSymbol'
 
 export default function QRScanScreen() {
-  const [permission, requestPermission] = useCameraPermissions();
-  const [scannedData, setScannedData] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [amountToPay, setAmountToPay] = useState<number>(0);
-  const [userTokens, setUserTokens] = useState<number>(100);
-  const [qrModalVisible, setQrModalVisible] = useState<boolean>(false);
-  const [userQrData, setUserQrData] = useState<string>('user123456'); // TODO:implémenter la récup du QRCode de l'user
-  const cameraRef = useRef(null);
+  const [permission, requestPermission] = useCameraPermissions()
+  const [scannedData, setScannedData] = useState<string | null>(null)
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [amountToPay, setAmountToPay] = useState<number>(0)
+  const [userTokens, setUserTokens] = useState<number>(100)
+  const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
+  const [userQrData, setUserQrData] = useState<string>('user123456') // TODO:implémenter la récup du QRCode de l'user
+  const cameraRef = useRef(null)
 
   useEffect(() => {
     if (permission === null) {
-      requestPermission();
+      requestPermission()
     }
-  }, [permission, requestPermission]);
+  }, [permission, requestPermission])
 
   const handleScanned = (barcode: { type: string; data: string }) => {
     if (barcode.data !== scannedData) {
-      setScannedData(barcode.data);
-      setAmountToPay(Math.floor(Math.random() * 50) + 10);
-      setModalVisible(true);
-      console.log(`Scanned ${barcode.type}: ${barcode.data}`);
+      setScannedData(barcode.data)
+      setAmountToPay(Math.floor(Math.random() * 50) + 10)
+      setModalVisible(true)
+      console.log(`Scanned ${barcode.type}: ${barcode.data}`)
     }
-  };
+  }
 
   const resetScanner = () => {
-    setScannedData(null);
-    setModalVisible(false);
-    setAmountToPay(0);
-  };
+    setScannedData(null)
+    setModalVisible(false)
+    setAmountToPay(0)
+  }
 
   const handlePayment = () => {
     if (userTokens >= amountToPay) {
-      setUserTokens((prevTokens) => prevTokens - amountToPay);
+      setUserTokens((prevTokens) => prevTokens - amountToPay)
       Alert.alert(
         'Succès',
         `Paiement de ${amountToPay} tokens effectué ! Il vous reste ${userTokens - amountToPay} tokens.`
-      );
+      )
     } else {
       Alert.alert(
         'Erreur',
         `Fonds insuffisants. Vous avez ${userTokens} tokens, mais il faut ${amountToPay} tokens.`
-      );
+      )
     }
-    resetScanner();
-  };
+    resetScanner()
+  }
 
   if (!permission) {
     return (
       <View style={styles.container}>
         <Text>Demande de permission en cours...</Text>
       </View>
-    );
+    )
   }
 
   if (!permission.granted) {
@@ -74,7 +74,7 @@ export default function QRScanScreen() {
         <Text>Permission caméra refusée. Activez-la dans les paramètres.</Text>
         <Button title="Demander la permission" onPress={requestPermission} />
       </View>
-    );
+    )
   }
 
   return (
@@ -89,7 +89,7 @@ export default function QRScanScreen() {
           }}
           onBarcodeScanned={({ type, data }) => {
             if (data && !modalVisible) {
-              handleScanned({ type, data });
+              handleScanned({ type, data })
             }
           }}
         />
@@ -99,7 +99,8 @@ export default function QRScanScreen() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={resetScanner}>
+        onRequestClose={resetScanner}
+      >
         <TouchableWithoutFeedback onPress={resetScanner}>
           <View style={styles.modalOverlay}>
             <View style={styles.bottomMenu}>
@@ -120,8 +121,9 @@ export default function QRScanScreen() {
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => {
-          setQrModalVisible(true);
-        }}>
+          setQrModalVisible(true)
+        }}
+      >
         <IconSymbol name="qrcode" size={24} color="#ffffff" />
       </TouchableOpacity>
 
@@ -129,7 +131,8 @@ export default function QRScanScreen() {
         animationType="slide"
         transparent={true}
         visible={qrModalVisible}
-        onRequestClose={() => setQrModalVisible(false)}>
+        onRequestClose={() => setQrModalVisible(false)}
+      >
         <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
             <View style={styles.bottomMenu}>
@@ -146,7 +149,7 @@ export default function QRScanScreen() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -235,4 +238,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})
