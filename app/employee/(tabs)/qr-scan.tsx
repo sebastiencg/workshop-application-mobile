@@ -1,5 +1,6 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { useEffect, useRef, useState } from 'react';
+import { CameraView, useCameraPermissions } from 'expo-camera'
+import { useRouter } from 'expo-router'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Alert,
   Button,
@@ -9,62 +10,61 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { useRouter } from 'expo-router';
+} from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
+import { IconSymbol } from '@/components/ui/IconSymbol'
 
 export default function QRScanScreen() {
-  const router = useRouter();
-  const [permission, requestPermission] = useCameraPermissions();
-  const [scannedData, setScannedData] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [canEnter, setCanEnter] = useState<boolean>(true);
-  const [qrModalVisible, setQrModalVisible] = useState<boolean>(false);
-  const [userQrData, setUserQrData] = useState<string>('user123456');
-  const cameraRef = useRef(null);
+  const router = useRouter()
+  const [permission, requestPermission] = useCameraPermissions()
+  const [scannedData, setScannedData] = useState<string | null>(null)
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [canEnter, setCanEnter] = useState<boolean>(true)
+  const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
+  const [userQrData, setUserQrData] = useState<string>('user123456')
+  const cameraRef = useRef(null)
 
   useEffect(() => {
     if (permission === null) {
-      requestPermission();
+      requestPermission()
     }
-  }, [permission, requestPermission]);
+  }, [permission, requestPermission])
 
   const handleScanned = (barcode: { type: string; data: string }) => {
     if (barcode.data !== scannedData) {
-      setScannedData(barcode.data);
-      setCanEnter(true);
-      setModalVisible(true);
-      console.log(`Scanned ${barcode.type}: ${barcode.data}`);
+      setScannedData(barcode.data)
+      setCanEnter(true)
+      setModalVisible(true)
+      console.log(`Scanned ${barcode.type}: ${barcode.data}`)
     }
-  };
+  }
 
   const resetScanner = () => {
-    setScannedData(null);
-    setModalVisible(false);
-  };
+    setScannedData(null)
+    setModalVisible(false)
+  }
 
   const handleContinue = () => {
-    Alert.alert('Entrée accordée', "L'utilisateur peut accéder à l'événement.");
-    resetScanner();
-  };
+    Alert.alert('Entrée accordée', "L'utilisateur peut accéder à l'événement.")
+    resetScanner()
+  }
 
   const handleDeny = () => {
-    Alert.alert('Entrée refusée', "L'utilisateur ne peut pas accéder à l'événement.");
-    resetScanner();
-  };
+    Alert.alert('Entrée refusée', "L'utilisateur ne peut pas accéder à l'événement.")
+    resetScanner()
+  }
 
   const navigateToRandomStand = () => {
-    const randomStandId = Math.floor(Math.random() * 3) + 1;
-    router.push(`/employee/stand/${randomStandId}`);
-  };
+    const randomStandId = Math.floor(Math.random() * 3) + 1
+    router.push(`/employee/stand/${randomStandId}`)
+  }
 
   if (!permission) {
     return (
       <View style={styles.container}>
         <Text>Demande de permission en cours...</Text>
       </View>
-    );
+    )
   }
 
   if (!permission.granted) {
@@ -73,7 +73,7 @@ export default function QRScanScreen() {
         <Text>Permission caméra refusée. Activez-la dans les paramètres.</Text>
         <Button title="Demander la permission" onPress={requestPermission} />
       </View>
-    );
+    )
   }
 
   return (
@@ -88,7 +88,7 @@ export default function QRScanScreen() {
           }}
           onBarcodeScanned={({ type, data }) => {
             if (data && !modalVisible) {
-              handleScanned({ type, data });
+              handleScanned({ type, data })
             }
           }}
         />
@@ -98,7 +98,8 @@ export default function QRScanScreen() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={resetScanner}>
+        onRequestClose={resetScanner}
+      >
         <TouchableWithoutFeedback onPress={resetScanner}>
           <View style={styles.modalOverlay}>
             <View style={styles.bottomMenu}>
@@ -106,7 +107,7 @@ export default function QRScanScreen() {
               {canEnter ? (
                 <>
                   <View style={styles.statusContainer}>
-                    <IconSymbol name="checkmark-circle" size={60} color="#4CAF50" />
+                    <IconSymbol name="checkmark.circle" size={60} color="#4CAF50" />
                   </View>
                   <Text style={[styles.menuText, styles.successText]}>Entrée autorisée</Text>
                   <Text style={styles.menuText}>Ticket valide pour cet événement</Text>
@@ -114,7 +115,7 @@ export default function QRScanScreen() {
               ) : (
                 <>
                   <View style={styles.statusContainer}>
-                    <IconSymbol name="close-circle" size={60} color="#F44336" />
+                    <IconSymbol name="c.circle" size={60} color="#F44336" />
                   </View>
                   <Text style={[styles.menuText, styles.errorText]}>Entrée refusée</Text>
                   <Text style={styles.menuText}>Ticket non valide pour cet événement</Text>
@@ -135,7 +136,8 @@ export default function QRScanScreen() {
         animationType="slide"
         transparent={true}
         visible={qrModalVisible}
-        onRequestClose={() => setQrModalVisible(false)}>
+        onRequestClose={() => setQrModalVisible(false)}
+      >
         <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
             <View style={styles.bottomMenu}>
@@ -156,7 +158,7 @@ export default function QRScanScreen() {
         <Text style={styles.randomStandButtonText}>Voir un stand au hasard</Text>
       </TouchableOpacity>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -278,4 +280,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})

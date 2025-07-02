@@ -1,13 +1,13 @@
-import React from 'react';
-import { FlatList, Pressable, StyleSheet, View, Image, Dimensions, ScrollView } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { router } from 'expo-router';
+import React from 'react'
+import { FlatList, Pressable, StyleSheet, View, Image, Dimensions, ScrollView } from 'react-native'
+import { ThemedText } from '@/components/ThemedText'
+import { router } from 'expo-router'
 
 type Stand = {
-  id: number;
-  name: string;
-  img: string;
-};
+  id: number
+  name: string
+  img: string
+}
 
 const stands: Stand[] = [
   {
@@ -30,17 +30,18 @@ const stands: Stand[] = [
     name: 'Goodies et smarties',
     img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
   },
-];
+]
 
 export default function HomeScreen() {
   const renderItem = ({ item }: { item: Stand }) => (
     <Pressable
       style={styles.card}
-      onPress={() => router.push({ pathname: '/employee/stand/[id]', params: { id: item.id } })}>
+      onPress={() => router.push({ pathname: '/employee/stand/[id]', params: { id: item.id } })}
+    >
       <Image source={{ uri: item.img }} style={styles.thumb} />
       <ThemedText style={styles.name}>{item.name}</ThemedText>
     </Pressable>
-  );
+  )
 
   return (
     <View style={styles.container}>
@@ -55,11 +56,11 @@ export default function HomeScreen() {
         columnWrapperStyle={styles.rowSpace}
       />
     </View>
-  );
+  )
 }
 
-const GAP = 16;
-const CARD_WIDTH = (Dimensions.get('window').width - GAP * 3 - 48) / 2;
+const GAP = 16
+const CARD_WIDTH = (Dimensions.get('window').width - GAP * 3 - 48) / 2
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
@@ -83,4 +84,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
   name: { textAlign: 'center', fontSize: 16 },
-});
+})

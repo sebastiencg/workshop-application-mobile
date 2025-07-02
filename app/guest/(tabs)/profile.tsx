@@ -1,60 +1,58 @@
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { router } from 'expo-router'
+import React, { useState } from 'react'
 import {
+  Alert,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
-  View,
-  Pressable,
   Text,
-  Modal,
   TextInput,
-  Alert,
-} from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { router } from 'expo-router';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUser } from '@/contexts/UserContext';
+  View,
+} from 'react-native'
+import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ThemedView'
+import { IconSymbol } from '@/components/ui/IconSymbol'
+import { useUser } from '@/contexts/UserContext'
 
 export default function ProfileScreen() {
-  const balance = 42;
-  const tabBarHeight = 50;
-  const [customAmount, setCustomAmount] = useState('');
-  const { user, setUser } = useUser();
+  const balance = 42
+  const tabBarHeight = 50
+  const [customAmount, setCustomAmount] = useState('')
+  const { user, setUser } = useUser()
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false)
 
   const expenses = [
     { id: '1', place: 'Saucisse Bar', amount: 30, time: '14:32' },
     { id: '2', place: 'Saucisse Bar', amount: 25, time: '13:05' },
     { id: '3', place: 'Saucisse Bar', amount: 50, time: '11:47' },
-  ];
+  ]
 
   const showModalForTokenShop = () => {
-    setModalVisible(true);
-  };
+    setModalVisible(true)
+  }
 
   const handleCustomAmount = () => {
-    const parsed = parseInt(customAmount, 10);
+    const parsed = parseInt(customAmount, 10)
 
     if (!isNaN(parsed) && parsed >= 10) {
-      confirmBuyCoins(parsed, true); // on signale que c’est un montant personnalisé
+      confirmBuyCoins(parsed, true) // on signale que c’est un montant personnalisé
     } else {
-      console.log('Montant invalide');
+      console.log('Montant invalide')
     }
-  };
-
-
+  }
 
   const buyCoins = (amount: number) => {
-    setModalVisible(false);
-  };
+    setModalVisible(false)
+  }
 
   const handleLogout = async () => {
-    await AsyncStorage.clear();
-    setUser(null);
-    router.replace('/login');
-  };
+    await AsyncStorage.clear()
+    setUser(null)
+    router.replace('/login')
+  }
 
   const confirmBuyCoins = (amount: number, closeModal: boolean = false) => {
     Alert.alert(
@@ -66,17 +64,15 @@ export default function ProfileScreen() {
           text: 'Confirmer',
           style: 'default',
           onPress: () => {
-            if (closeModal) setModalVisible(false); // on ferme après confirmation
-            setCustomAmount('');
-            buyCoins(amount);
+            if (closeModal) setModalVisible(false) // on ferme après confirmation
+            setCustomAmount('')
+            buyCoins(amount)
           },
         },
       ],
       { cancelable: true }
-    );
-  };
-
-
+    )
+  }
 
   const confirmLogout = () => {
     Alert.alert(
@@ -91,12 +87,12 @@ export default function ProfileScreen() {
         },
       ],
       { cancelable: true }
-    );
-  };
+    )
+  }
 
   const navigateToAdminZone = () => {
-    router.push('/employee/(tabs)');
-  };
+    router.push('/employee/(tabs)')
+  }
 
   return (
     <View style={styles.flex}>
@@ -138,7 +134,8 @@ export default function ProfileScreen() {
       <Pressable
         accessibilityLabel="Acheter des jetons"
         onPress={showModalForTokenShop}
-        style={[styles.floatingButton, { bottom: tabBarHeight }]}>
+        style={[styles.floatingButton, { bottom: tabBarHeight }]}
+      >
         <Text style={styles.floatingButtonText}>Acheter des jetons</Text>
       </Pressable>
 
@@ -146,14 +143,19 @@ export default function ProfileScreen() {
         transparent
         animationType="slide"
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Choisir le montant</Text>
             <Text style={styles.modalInfo}>1 euro = 10 coins</Text>
 
             {[50, 100, 200, 500].map((amount) => (
-              <Pressable key={amount} onPress={() => confirmBuyCoins(amount)} style={styles.amountButton}>
+              <Pressable
+                key={amount}
+                onPress={() => confirmBuyCoins(amount)}
+                style={styles.amountButton}
+              >
                 <Text style={styles.amountText}>{amount} coins</Text>
               </Pressable>
             ))}
@@ -179,13 +181,13 @@ export default function ProfileScreen() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }
 
-const INPUT_HEIGHT = 48;
-const BORDER_RADIUS = 8;
-const FONT_SIZE_BODY = 16;
-const FONT_SIZE_H2 = 18;
+const INPUT_HEIGHT = 48
+const BORDER_RADIUS = 8
+const FONT_SIZE_BODY = 16
+const FONT_SIZE_H2 = 18
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
@@ -292,4 +294,4 @@ const styles = StyleSheet.create({
   },
 
   cancelButton: { marginTop: 40, alignItems: 'center' },
-});
+})

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -8,66 +8,66 @@ import {
   Image,
   Alert,
   StatusBar,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import logoImage from '@/assets/images/icon.png';
-import { fetcher, fetcherPost } from '@/services/apiService';
-import { useUser } from '@/contexts/UserContext';
-import { router } from 'expo-router';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import logoImage from '@/assets/images/icon.png'
+import { fetcher, fetcherPost } from '@/services/apiService'
+import { useUser } from '@/contexts/UserContext'
+import { router } from 'expo-router'
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordVisibility, setPasswordVisibility] = useState(true);
-  const navigation = useNavigation();
-  const { setUser } = useUser();
-  const { user } = useUser();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordVisibility, setPasswordVisibility] = useState(true)
+  const navigation = useNavigation()
+  const { setUser } = useUser()
+  const { user } = useUser()
 
   useEffect(() => {
     if (user) {
-      router.replace('/guest/(tabs)');
+      router.replace('/guest/(tabs)')
     }
-  }, [user]);
+  }, [user])
   useEffect(() => {
-    navigation.setOptions({ headerShown: false });
-    StatusBar.setBackgroundColor('#D8E7FE');
-    StatusBar.setBarStyle('dark-content');
-  }, [navigation]);
+    navigation.setOptions({ headerShown: false })
+    StatusBar.setBackgroundColor('#D8E7FE')
+    StatusBar.setBarStyle('dark-content')
+  }, [navigation])
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
-      return;
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs.')
+      return
     }
 
     try {
-      const data = await fetcherPost('/login_check', { email, password });
+      const data = await fetcherPost('/login_check', { email, password })
 
-      await AsyncStorage.setItem('token', data.token);
-      await AsyncStorage.setItem('refresh_token', data.refresh_token);
+      await AsyncStorage.setItem('token', data.token)
+      await AsyncStorage.setItem('refresh_token', data.refresh_token)
       await AsyncStorage.setItem(
         'refresh_token_expiration',
         data.refresh_token_expiration.toString()
-      );
-      await AsyncStorage.setItem('hasSession', 'true');
+      )
+      await AsyncStorage.setItem('hasSession', 'true')
 
-      const user = await fetcher('/user');
-      setUser(user.data);
+      const user = await fetcher('/user')
+      setUser(user.data)
 
-      Alert.alert('Connexion réussie', 'Bienvenue !');
+      Alert.alert('Connexion réussie', 'Bienvenue !')
 
-      router.replace('/guest/(tabs)');
+      router.replace('/guest/(tabs)')
     } catch (error) {
-      console.error('Erreur de connexion :', error);
-      Alert.alert('Erreur', 'Email ou mot de passe incorrect.');
+      console.error('Erreur de connexion :', error)
+      Alert.alert('Erreur', 'Email ou mot de passe incorrect.')
     }
-  };
+  }
 
   const togglePasswordVisibility = () => {
-    setPasswordVisibility(!passwordVisibility);
-  };
+    setPasswordVisibility(!passwordVisibility)
+  }
 
   return (
     <View style={styles.container}>
@@ -108,8 +108,8 @@ const LoginScreen = () => {
         <Text style={styles.footerText}>Mot de passe oublié ?</Text>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -164,6 +164,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#5e5e5e',
   },
-});
+})
 
-export default LoginScreen;
+export default LoginScreen
