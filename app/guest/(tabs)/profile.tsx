@@ -22,7 +22,6 @@ import { useUser } from '@/contexts/UserContext'
 
 export default function ProfileScreen() {
   const balance = 42
-  const tabBarHeight = 50
   const [customSliderValue, setCustomSliderValue] = useState(100)
   const { user, setUser } = useUser()
   const [ticketModalVisible, setTicketModalVisible] = useState(false)
@@ -44,8 +43,8 @@ export default function ProfileScreen() {
   ]
 
   const showModalForTokenShop = () => {
-    setModalVisible(true)
-  }
+    setModalVisible(true);
+  };
 
   const handleCustomAmount = () => {
     confirmBuyCoins(customSliderValue, true)
@@ -59,8 +58,8 @@ export default function ProfileScreen() {
   }
 
   const buyCoins = (amount: number) => {
-    setModalVisible(false)
-  }
+    setModalVisible(false);
+  };
 
   const handleLogout = async () => {
     await AsyncStorage.clear()
@@ -111,11 +110,20 @@ export default function ProfileScreen() {
     <View style={styles.flex}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.inputRow}>
-          <ThemedText type="title">Coucou toi</ThemedText>
+          <ThemedText type="title" style={styles.h1}>
+            Coucou toi
+          </ThemedText>
           <Pressable onPress={confirmLogout}>
-            <IconSymbol size={28} name="power" color={'#fff'} />
+            <IconSymbol size={28} name="logout" color={"#000"} />
           </Pressable>
         </View>
+
+        {user?.roles.includes("ROLE_Admin") && (
+          <Pressable style={styles.adminButton} onPress={navigateToAdminZone}>
+            <Text style={styles.buttonText}>Accéder à l'espace employé</Text>
+            <IconSymbol size={20} name="chevron.right" color="#000" />
+          </Pressable>
+        )}
 
         <ThemedView style={styles.balanceCard}>
           <ThemedText type="subtitle" style={styles.balanceLabel}>
@@ -124,24 +132,64 @@ export default function ProfileScreen() {
           <ThemedText type="title" style={styles.balanceValue}>
             {balance} coins
           </ThemedText>
+
+          <Pressable
+            onPress={showModalForTokenShop}
+            style={styles.addCoinsButton}
+          >
+            <Text style={styles.addCoinsText}>Recharger</Text>
+          </Pressable>
         </ThemedView>
 
-        {user?.roles.includes('ROLE_Admin') && (
-          <Pressable style={styles.adminButton} onPress={navigateToAdminZone}>
-            <Text style={styles.adminButtonText}>Accéder à l'espace employé</Text>
-          </Pressable>
-        )}
-
         <ThemedText style={styles.h2}>Tes dernières dépenses</ThemedText>
-        {expenses.map((exp) => (
-          <ThemedView key={exp.id} style={styles.expenseRow}>
-            <View>
-              <ThemedText>{exp.place}</ThemedText>
-              <ThemedText>{exp.time}</ThemedText>
-            </View>
-            <ThemedText style={styles.expenseAmount}>‑ {exp.amount}</ThemedText>
+
+        {expenses.length === 0 ? (
+          <ThemedView style={styles.emptyState}>
+            <IconSymbol size={48} name="receipt" style={styles.emptyIcon} />
+            <ThemedText style={styles.emptyText}>
+              Aucune dépense récente
+            </ThemedText>
           </ThemedView>
-        ))}
+        ) : (
+          <View style={styles.expensesList}>
+            {expenses.map((exp, index) => (
+              <ThemedView
+                key={exp.id}
+                style={[
+                  styles.expenseRow,
+                  index === expenses.length - 1 && styles.lastExpenseRow,
+                ]}
+              >
+                <View style={styles.expenseContent}>
+                  <View style={styles.leftSection}>
+                    <View style={styles.iconContainer}>
+                      <IconSymbol
+                        size={24}
+                        name="map"
+                        style={styles.expenseIcon}
+                        color={"#eee"}
+                      />
+                    </View>
+                    <View style={styles.expenseDetails}>
+                      <ThemedText style={styles.expensePlace}>
+                        {exp.place}
+                      </ThemedText>
+                      <ThemedText style={styles.expenseTime}>
+                        {exp.time}
+                      </ThemedText>
+                    </View>
+                  </View>
+
+                  <View style={styles.rightSection}>
+                    <ThemedText style={styles.expenseAmount}>
+                      {exp.amount} coins
+                    </ThemedText>
+                  </View>
+                </View>
+              </ThemedView>
+            ))}
+          </View>
+        )}
       </ScrollView>
 
       {user?.ticket ? (
@@ -326,16 +374,30 @@ const BORDER_RADIUS = 8
 const SCREEN_WIDTH = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  container: { padding: 24, gap: 24, marginTop: 48 },
+  flex: { flex: 1, backgroundColor: "#fff" },
+  container: { padding: 20, gap: 20, marginTop: 48 },
 
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  h2: { fontSize: FONT_SIZE_H2, marginTop: 18 },
-
+  h1: {
+    color: "#000",
+  },
+  h2: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginTop: 32,
+    color: "#333",
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  /* Solde */
   balanceCard: {
     padding: 20,
     borderWidth: 1,
@@ -343,9 +405,19 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
   },
-  balanceLabel: { marginBottom: 4 },
-  balanceValue: { fontSize: 32, fontWeight: '700' },
+  balanceLabel: {
+    marginBottom: 4,
+    fontSize: 16,
+    opacity: 0.7,
+    color: "#fff",
+  },
+  balanceValue: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#fff",
+  },
 
+  /* Dépenses */
   expenseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -355,39 +427,40 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     backgroundColor: 'transparent',
   },
+  tokenShopButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: "#007AFF",
+    alignItems: "center",
+    borderRadius: 8,
+  },
   expenseAmount: {
     fontWeight: '700',
     fontSize: FONT_SIZE_H2,
   },
+  buttonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "500",
+  },
 
   adminButton: {
-    paddingVertical: 10,
+    paddingVertical: 16,
     paddingHorizontal: 20,
-    marginTop: 20,
-    backgroundColor: '#265d88',
-    alignItems: 'center',
-    borderRadius: 28,
+    backgroundColor: "#F8F9FA",
+    alignItems: "center",
+    borderLeftWidth: 4,
+    borderLeftColor: "#000",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   adminButtonText: {
-    color: '#fff',
+    color: "#000",
     fontSize: FONT_SIZE_BODY,
-    fontWeight: '600',
-  },
-  floatingButton: {
-    position: 'absolute',
-    left: 24,
-    right: 24,
-    paddingVertical: 20,
-    borderRadius: 28,
-    backgroundColor: '#2196F3',
-    alignItems: 'center',
-  },
-  floatingButtonText: {
-    color: '#fff',
-    fontSize: FONT_SIZE_BODY,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 
+  /* Modal */
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
@@ -565,6 +638,104 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+  },
+
+  emptyIcon: {
+    opacity: 0.4,
+    marginBottom: 12,
+    color: "#999",
+  },
+
+  emptyText: {
+    fontSize: 16,
+    opacity: 0.6,
+    textAlign: "center",
+    color: "#666",
+  },
+
+  /* Dépenses */
+  expensesList: {
+    gap: 6,
+    marginBottom: 30,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#e0e0e0",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+
+  expenseIcon: {
+    opacity: 0.6,
+  },
+
+  expenseDetails: {
+    flex: 1,
+  },
+
+  expensePlace: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 2,
+    color: "#333",
+  },
+
+  expenseTime: {
+    fontSize: 14,
+    color: "#666",
+  },
+
+  rightSection: {
+    alignItems: "flex-end",
+  },
+
+  expenseAmount: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+
+  balanceCard: {
+    padding: 30,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    alignItems: "center",
+    backgroundColor: "black",
+    position: "relative",
+  },
+
+  expenseRow: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 16,
+  },
+
+  lastExpenseRow: {
+    marginBottom: 20,
+  },
+
+  expenseContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  leftSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
 
   cancelButton: { marginTop: 40, alignItems: 'center' },
 
@@ -611,4 +782,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-})
+  addCoinsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  addCoinsText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+});
