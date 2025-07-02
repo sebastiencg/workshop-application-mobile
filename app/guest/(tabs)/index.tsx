@@ -101,7 +101,6 @@ export default function HomeScreen() {
     ;(async () => {
       const { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
-        console.warn("La permission n'est pas accordée")
         return
       }
 

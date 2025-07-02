@@ -48,9 +48,7 @@ const rl = readline.createInterface({
 const moveDirectories = async (userInput) => {
   try {
     if (userInput === 'y') {
-      // Create the app-example directory
       await fs.promises.mkdir(exampleDirPath, { recursive: true })
-      console.log(`📁 /${exampleDir} directory created.`)
     }
 
     // Move old directories to new app-example directory or delete them
@@ -60,20 +58,16 @@ const moveDirectories = async (userInput) => {
         if (userInput === 'y') {
           const newDirPath = path.join(root, exampleDir, dir)
           await fs.promises.rename(oldDirPath, newDirPath)
-          console.log(`➡️ /${dir} moved to /${exampleDir}/${dir}.`)
         } else {
           await fs.promises.rm(oldDirPath, { recursive: true, force: true })
-          console.log(`❌ /${dir} deleted.`)
         }
       } else {
-        console.log(`➡️ /${dir} does not exist, skipping.`)
       }
     }
 
     // Create new /app directory
     const newAppDirPath = path.join(root, newAppDir)
     await fs.promises.mkdir(newAppDirPath, { recursive: true })
-    console.log('\n📁 New /app directory created.')
 
     // Create index.tsx
     const indexPath = path.join(newAppDirPath, 'index.tsx')

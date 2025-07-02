@@ -1,14 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Alert } from 'react-native'
-import { router } from 'expo-router'
 
-const BASE_URL = 'https://edunova.api.miantsebastien.com/api'
-
-interface TokenResponse {
-  token: string
-  refresh_token: string
-  refresh_token_expiration: number
-}
+const BASE_URL = 'https://locco.thomascarrot.com/api'
 
 export const isTokenExpired = (token: string): boolean => {
   try {
@@ -20,113 +12,62 @@ export const isTokenExpired = (token: string): boolean => {
   }
 }
 
-export const isRefreshTokenExpired = async (): Promise<boolean> => {
-  const expiration = await AsyncStorage.getItem('refresh_token_expiration')
-  if (!expiration) return true
-  return parseInt(expiration) < Math.floor(Date.now() / 1000)
-}
-
-export const refreshToken = async (): Promise<string> => {
-  const refresh_token = await AsyncStorage.getItem('refresh_token')
-  const expired = await isRefreshTokenExpired()
-  const hadSession = await AsyncStorage.getItem('hasSession')
-
-  // 💡 si l'utilisateur n’a jamais eu de session (pas encore connecté)
-  if ((!refresh_token || expired) && hadSession === 'true') {
-    throw new Error('Refresh token invalide ou expiré')
-  }
-
-  if (!refresh_token || expired) {
-    // ⚠️ on retourne une chaîne vide sans throw
-    return ''
-  }
-
-  const response = await fetch(`${BASE_URL}/token/refresh`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh_token }),
-  })
-
-  if (!response.ok) {
-    throw new Error('Échec du rafraîchissement du token')
-  }
-
-  const data: TokenResponse = await response.json()
-
-  await AsyncStorage.setItem('token', data.token)
-  await AsyncStorage.setItem('refresh_token', data.refresh_token)
-  await AsyncStorage.setItem('refresh_token_expiration', data.refresh_token_expiration.toString())
-
-  return data.token
-}
-
-const redirectToLogin = async () => {
-  const hadSession = await AsyncStorage.getItem('hasSession')
-
-  await AsyncStorage.clear()
-
-  if (hadSession === 'true') {
-    Alert.alert('Session expirée', 'Veuillez vous reconnecter.')
-  }
-
-  router.replace('/login')
-}
-
 const customFetch = async (url: string, options: RequestInit = {}) => {
+  console.debug('customFetch: Starting request', { url, options })
   try {
     let token = await AsyncStorage.getItem('token')
+    console.debug('customFetch: Token retrieved from AsyncStorage', {
+      token: token ? token : 'absent',
+    })
 
-    if (!token || isTokenExpired(token)) {
-      try {
-        token = await refreshToken()
-      } catch (refreshError) {
-        await redirectToLogin()
-        console.error(refreshError)
-        //throw refreshError;
+    let headers
+    if (!token) {
+      headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
       }
-    }
-
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      ...(options.headers || {}),
+      console.debug('customFetch: Headers (no token)', { headers })
+    } else {
+      headers = {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {}),
+      }
+      console.debug('customFetch: Headers (with token)', { headers })
     }
 
     const finalUrl = `${BASE_URL}${url}`
-    const method = options.method || 'GET'
+    console.debug('customFetch: Final URL', { finalUrl })
 
-    // 🔍 Log de la requête
-    console.log('📤 FETCH →', method, finalUrl)
-    if (options.body) {
-      try {
-        const parsedBody = JSON.parse(options.body as string)
-        console.log('📦 PAYLOAD:', parsedBody)
-      } catch {
-        console.log('📦 PAYLOAD (raw):', options.body)
-      }
-    }
-    console.log('🧾 HEADERS:', headers)
-
-    const response = await fetch(finalUrl, {
+    const fetchOptions = {
       ...options,
       headers,
+    }
+    console.debug('customFetch: Fetch options', { fetchOptions })
+
+    const response = await fetch(finalUrl, fetchOptions)
+    console.debug('customFetch: Response received', {
+      status: response.status,
+      ok: response.ok,
+      url: response.url,
     })
 
     const responseData = await response.json()
+    console.debug('customFetch: Response data parsed', { responseData })
 
     if (!response.ok) {
-      console.error('❌ FETCH ERROR:', response.status, response.statusText)
-      console.error('📨 ERROR RESPONSE:', responseData)
+      console.debug('customFetch: Request failed (response not OK)', {
+        status: response.status,
+        statusText: response.statusText,
+        responseData,
+      })
       throw responseData
     }
 
-    // ✅ Réponse OK
-    console.log('✅ FETCH SUCCESS:', response.status, response.statusText)
-    console.log('📨 RESPONSE DATA:', responseData)
-
+    console.debug('customFetch: Request successful', { responseData })
     return responseData
   } catch (error) {
-    console.error('💥 customFetch error:', error)
+    console.debug('customFetch: Error during fetch', { error })
     throw error
   }
 }

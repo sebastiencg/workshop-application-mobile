@@ -35,7 +35,6 @@ export default function QRScanScreen() {
       setScannedData(barcode.data)
       setCanEnter(true)
       setModalVisible(true)
-      console.log(`Scanned ${barcode.type}: ${barcode.data}`)
     }
   }
 
