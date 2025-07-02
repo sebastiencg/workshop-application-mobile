@@ -28,8 +28,8 @@ export default function ProfileScreen() {
   const balance = 42
   const [customSliderValue, setCustomSliderValue] = useState(100)
   const { user, setUser } = useUser()
-
   const [ticketModalVisible, setTicketModalVisible] = useState(false)
+
   const [modalVisible, setModalVisible] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
 
@@ -467,6 +467,7 @@ const styles = StyleSheet.create({
   /* Cards */
   cardsContainer: { paddingVertical: 8, paddingHorizontal: 4, gap: 10 },
   card: {
+    backgroundColor: 'white',
     width: SCREEN_WIDTH * 0.35,
     height: 160,
     borderRadius: 16,
@@ -486,8 +487,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginVertical: 6,
   },
-  bonusText: { fontSize: 12, fontWeight: '600', color: '#2196F3' },
-  priceText: { color: '#fff', marginTop: 4 },
+
+  bonusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#2196F3',
+  },
+  priceText: {
+    marginTop: 6,
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'black',
+  },
 
   /* Slider */
   divider: { height: 1, backgroundColor: '#e0e0e0', marginVertical: 24 },
