@@ -22,7 +22,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
-import { fetcher, fetcherPost } from '@/services/apiServiceTest'
+import { fetcher, fetcherPost } from '@/services/apiService'
 
 export default function ProfileScreen() {
   const [customSliderValue, setCustomSliderValue] = useState(100)
@@ -48,6 +48,7 @@ export default function ProfileScreen() {
   const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string) => {
     try {
       const data = await fetcherPost('/payment-intent-ticket', { amountCoins, type })
+      console.log(data)
       const { paymentIntent, ephemeralKey, customer, cartId } = data
 
       const { error: initError } = await initPaymentSheet({
