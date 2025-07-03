@@ -28,7 +28,7 @@ export default function ProfileScreen() {
   const [customSliderValue, setCustomSliderValue] = useState(100)
   const { user, setUser } = useUser()
   const [ticketModalVisible, setTicketModalVisible] = useState(false)
-  const balance = user?.tokens
+  const balance = user?.token
 
   const [modalVisible, setModalVisible] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)

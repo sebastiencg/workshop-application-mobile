@@ -66,7 +66,7 @@ export default function ProfileScreen() {
       }
       headerBackgroundColor={{ dark: '', light: '' }}
     >
-      <Pressable onPress={() => router.push('/')} style={styles.flexRow}>
+      <Pressable onPress={() => router.push('/guest/(tabs)')} style={styles.flexRow}>
         <IconSymbol name="chevron.left" color="#000" />
         <ThemedText style={styles.backToHome}>retour à la carte</ThemedText>
       </Pressable>
