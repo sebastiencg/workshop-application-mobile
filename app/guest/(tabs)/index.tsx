@@ -2,6 +2,7 @@ import * as Location from 'expo-location'
 import React, { useEffect, useRef, useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { LatLng, Marker, Polygon } from 'react-native-maps'
+import { router } from "expo-router";
 
 type Stand = {
   id: number

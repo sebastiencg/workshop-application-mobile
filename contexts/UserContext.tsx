@@ -6,7 +6,7 @@ export interface User {
   firstName?: string
   lastName?: string
   username?: string
-  tokens?: number
+  token?: number
   ofUser: {
     id: number
     roles: string[]
