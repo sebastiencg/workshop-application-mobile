@@ -73,7 +73,7 @@ export default function ProfileScreen() {
         }
       } else {
         Alert.alert('Succès', 'Paiement effectué !')
-        await fetcherPost('/coins/credit', {cartId, amountCoins})
+        //await fetcherPost('/coins/credit', {cartId, amountCoins})
       }
     } catch (err: any) {
       console.error(err)
@@ -111,7 +111,7 @@ export default function ProfileScreen() {
 
     Alert.alert(
       'Confirmation d’achat',
-      `Es-tu sûr·e de vouloir acheter ${amount} coins ?`,
+      `Es-tu sûr·e de vouloir acheter ${coin} coins ?`,
       [
         { text: 'Annuler', style: 'cancel' },
         {
