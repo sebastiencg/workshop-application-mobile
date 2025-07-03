@@ -144,12 +144,7 @@ export default function QRScanScreen() {
             <View style={styles.bottomMenu}>
               <Text style={styles.menuTitle}>Votre QR Code</Text>
               <View style={styles.qrCodeContainer}>
-                <QRCode
-                  value={userQrData.billet.id}
-                  size={200}
-                  backgroundColor="white"
-                  color="black"
-                />
+                <QRCode value={'oui'} size={200} backgroundColor="white" color="black" />
               </View>
               <Text style={styles.menuText}>{userQrData.username}</Text>
               <View style={styles.menuButtonContainer}>

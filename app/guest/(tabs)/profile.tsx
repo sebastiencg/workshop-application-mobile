@@ -168,7 +168,7 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {user?.roles.includes('ROLE_Admin') && (
+        {user?.ofUser.roles.includes('ROLE_EMPLOYEE') && (
           <Pressable style={styles.adminButton} onPress={() => router.push('/employee/(tabs)')}>
             <Text style={styles.adminButtonText}>Accéder à l’espace employé</Text>
             <IconSymbol size={20} name="chevron.right" color="#000" />
