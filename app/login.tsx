@@ -55,7 +55,8 @@ const LoginScreen = () => {
         await AsyncStorage.removeItem('hasSession')
         throw new Error('User null')
       }
-      setUser({ ...user, roles: ['ROLE_Admin', 'employee', 'user'], billet: 'oui' })
+      setUser(user)
+      console.info(user.ofUser.roles)
 
       router.replace('/guest/(tabs)')
     } catch (error: unknown) {
@@ -111,9 +112,12 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>Se connecter</Text>
       </TouchableOpacity>
 
-      {/*<View style={styles.footer}>*/}
-      {/*  <Text style={styles.footerText}>Mot de passe oublié ?</Text>*/}
-      {/*</View>*/}
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Vous n'avez pas de compte? </Text>
+        <TouchableOpacity onPress={() => router.push('/register')}>
+          <Text style={styles.footerLinkText}>S'inscrire</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }
@@ -162,13 +166,18 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginTop: 20,
     width: '80%',
   },
   footerText: {
     fontSize: 14,
     color: '#5e5e5e',
+  },
+  footerLinkText: {
+    fontSize: 14,
+    color: '#EB7F15',
+    fontWeight: 'bold',
   },
 })
 
