@@ -45,9 +45,9 @@ export default function ProfileScreen() {
     { id: '2', place: 'Saucisse Bar', amount: 25, time: '13:05' },
   ]
 
-  const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
+  const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string ) => {
     try {
-      const data = await fetcherPost('/payment-intent-ticket', { amountCoins })
+      const data = await fetcherPost('/payment-intent-ticket', { amountCoins, type })
       const { paymentIntent, ephemeralKey, customer, cartId } = data
 
       const { error: initError } = await initPaymentSheet({
@@ -119,7 +119,7 @@ export default function ProfileScreen() {
           style: 'default',
           onPress: () => {
             setModalVisible(false)
-            prepareAndOpenPaymentSheet(amount)
+            prepareAndOpenPaymentSheet(amount,'token')
           },
         },
       ],
@@ -140,7 +140,7 @@ export default function ProfileScreen() {
           style: 'default',
           onPress: () => {
             setTicketModalVisible(false)
-            prepareAndOpenPaymentSheet(amount)
+            prepareAndOpenPaymentSheet(amount,'ticket')
           },
         },
       ],
