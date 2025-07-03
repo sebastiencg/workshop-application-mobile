@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   StatusBar,
+  Platform,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -32,7 +33,9 @@ const LoginScreen = () => {
   }, [user])
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
-    StatusBar.setBackgroundColor('#D8E7FE')
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('#D8E7FE')
+    }
     StatusBar.setBarStyle('dark-content')
   }, [navigation])
   type ErrorType = { code: number; message: string }
@@ -112,6 +115,32 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>Se connecter</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={styles.bypassButton}
+        onPress={() => {
+          const mockUser = {
+            id: 999,
+            email: 'dev@example.com',
+            firstName: 'Dev',
+            lastName: 'User',
+            username: 'dev_user',
+            tokens: 123,
+            ofUser: {
+              id: 999,
+              roles: ['ROLE_USER', 'ROLE_EMPLOYEE'],
+              username: 'dev_user',
+              billets: [],
+            },
+          }
+          setUser(mockUser)
+          AsyncStorage.setItem('hasSession', 'true')
+          AsyncStorage.setItem('token', 'dev-mode-token')
+          router.replace('/guest/(tabs)')
+        }}
+      >
+        <Text style={styles.bypassButtonText}>Mode Développeur</Text>
+      </TouchableOpacity>
+
       <View style={styles.footer}>
         <Text style={styles.footerText}>Vous n'avez pas de compte? </Text>
         <TouchableOpacity onPress={() => router.push('/register')}>
@@ -162,6 +191,19 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: '600',
+  },
+  bypassButton: {
+    backgroundColor: '#4a90e2',
+    padding: 10,
+    borderRadius: 30,
+    width: '60%',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  bypassButtonText: {
+    color: 'white',
+    fontSize: 14,
     fontWeight: '600',
   },
   footer: {

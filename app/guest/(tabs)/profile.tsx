@@ -25,10 +25,10 @@ import { useUser } from '@/contexts/UserContext'
 import { fetcher, fetcherPost } from '@/services/apiServiceTest'
 
 export default function ProfileScreen() {
-  const balance = 42
   const [customSliderValue, setCustomSliderValue] = useState(100)
   const { user, setUser } = useUser()
   const [ticketModalVisible, setTicketModalVisible] = useState(false)
+  const balance = user?.tokens
 
   const [modalVisible, setModalVisible] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
@@ -45,7 +45,7 @@ export default function ProfileScreen() {
     { id: '2', place: 'Saucisse Bar', amount: 25, time: '13:05' },
   ]
 
-  const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string ) => {
+  const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string) => {
     try {
       const data = await fetcherPost('/payment-intent-ticket', { amountCoins, type })
       const { paymentIntent, ephemeralKey, customer, cartId } = data
@@ -104,7 +104,6 @@ export default function ProfileScreen() {
     )
   }
 
-
   const confirmBuyCoins = (coin: number) => {
     const amountEuro = coin / 10
     const amount = amountEuro * 100
@@ -119,7 +118,7 @@ export default function ProfileScreen() {
           style: 'default',
           onPress: () => {
             setModalVisible(false)
-            prepareAndOpenPaymentSheet(amount,'token')
+            prepareAndOpenPaymentSheet(amount, 'token')
           },
         },
       ],
@@ -140,13 +139,12 @@ export default function ProfileScreen() {
           style: 'default',
           onPress: () => {
             setTicketModalVisible(false)
-            prepareAndOpenPaymentSheet(amount,'ticket')
+            prepareAndOpenPaymentSheet(amount, 'ticket')
           },
         },
       ],
       { cancelable: true }
     )
-
   }
 
   const calculateBonus = (amount: number): number => {
@@ -365,8 +363,6 @@ export default function ProfileScreen() {
               style={styles.paymentButton}
               onPress={() => {
                 confirmBuyTicket()
-
-
               }}
             >
               <Text style={styles.paymentButtonText}>Payer avec une carte bancaire</Text>

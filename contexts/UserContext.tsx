@@ -1,9 +1,18 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 
 export interface User {
-  username: string
-  roles: string[]
-  [key: string]: any
+  id?: number
+  email?: string
+  firstName?: string
+  lastName?: string
+  username?: string
+  tokens?: number
+  ofUser: {
+    id: number
+    roles: string[]
+    username?: string
+    billets?: any[]
+  }
 }
 
 interface UserContextType {
