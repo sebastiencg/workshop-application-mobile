@@ -45,10 +45,10 @@ export default function ProfileScreen() {
     { id: '2', place: 'Saucisse Bar', amount: 25, time: '13:05' },
   ]
 
-  const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
+  const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string ) => {
     try {
-      const data = await fetcherPost('/payment-intent', { amountCoins })
-      const { paymentIntent, ephemeralKey, customer } = data
+      const data = await fetcherPost('/payment-intent-ticket', { amountCoins, type })
+      const { paymentIntent, ephemeralKey, customer, cartId } = data
 
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: 'Saucisse Bar',
@@ -73,7 +73,7 @@ export default function ProfileScreen() {
         }
       } else {
         Alert.alert('Succès', 'Paiement effectué !')
-        await fetcher('/coins/credit')
+        //await fetcherPost('/coins/credit', {cartId, amountCoins})
       }
     } catch (err: any) {
       console.error(err)
@@ -86,11 +86,32 @@ export default function ProfileScreen() {
     setUser(null)
     router.replace('/login')
   }
+  const confirmLogout = () => {
+    Alert.alert(
+      'Déconnexion',
+      'Es-tu sûr·e de vouloir te déconnecter ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Confirmer',
+          style: 'default',
+          onPress: () => {
+            handleLogout()
+          },
+        },
+      ],
+      { cancelable: true }
+    )
+  }
 
-  const confirmBuyCoins = (amount: number) => {
+
+  const confirmBuyCoins = (coin: number) => {
+    const amountEuro = coin / 10
+    const amount = amountEuro * 100
+
     Alert.alert(
       'Confirmation d’achat',
-      `Es-tu sûr·e de vouloir acheter ${amount} coins ?`,
+      `Es-tu sûr·e de vouloir acheter ${coin} coins ?`,
       [
         { text: 'Annuler', style: 'cancel' },
         {
@@ -98,12 +119,34 @@ export default function ProfileScreen() {
           style: 'default',
           onPress: () => {
             setModalVisible(false)
-            prepareAndOpenPaymentSheet(amount)
+            prepareAndOpenPaymentSheet(amount,'token')
           },
         },
       ],
       { cancelable: true }
     )
+  }
+
+  const confirmBuyTicket = () => {
+    const ticket = 15
+    const amount = ticket * 100
+    Alert.alert(
+      'Confirmation d’achat',
+      'Voulez-vous acheter un billet pour 15 € ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Confirmer',
+          style: 'default',
+          onPress: () => {
+            setTicketModalVisible(false)
+            prepareAndOpenPaymentSheet(amount,'ticket')
+          },
+        },
+      ],
+      { cancelable: true }
+    )
+
   }
 
   const calculateBonus = (amount: number): number => {
@@ -120,7 +163,7 @@ export default function ProfileScreen() {
           <ThemedText type="title" style={styles.h1}>
             Votre profil
           </ThemedText>
-          <Pressable onPress={handleLogout}>
+          <Pressable onPress={confirmLogout}>
             <IconSymbol size={28} name="logout" color="#000" />
           </Pressable>
         </View>
@@ -321,22 +364,9 @@ export default function ProfileScreen() {
             <Pressable
               style={styles.paymentButton}
               onPress={() => {
-                setTicketModalVisible(false)
-                Alert.alert(
-                  'Confirmation d’achat',
-                  'Voulez-vous acheter un billet pour 15 € ?',
-                  [
-                    { text: 'Annuler', style: 'cancel' },
-                    {
-                      text: 'Confirmer',
-                      style: 'default',
-                      onPress: () => {
-                        Alert.alert('Achat réussi', 'Votre billet est maintenant disponible.')
-                      },
-                    },
-                  ],
-                  { cancelable: true }
-                )
+                confirmBuyTicket()
+
+
               }}
             >
               <Text style={styles.paymentButtonText}>Payer avec une carte bancaire</Text>
