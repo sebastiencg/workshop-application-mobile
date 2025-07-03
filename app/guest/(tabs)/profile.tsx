@@ -47,8 +47,7 @@ export default function ProfileScreen() {
 
   const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
     try {
-      const amount = amountCoins * 100
-      const data = await fetcherPost('/payment-intent', { amount })
+      const data = await fetcherPost('/payment-intent-ticket', { amountCoins })
       const { paymentIntent, ephemeralKey, customer } = data
 
       const { error: initError } = await initPaymentSheet({
@@ -106,7 +105,10 @@ export default function ProfileScreen() {
   }
 
 
-  const confirmBuyCoins = (amount: number) => {
+  const confirmBuyCoins = (coin: number) => {
+    const amountEuro = coin / 10
+    const amount = amountEuro * 100
+
     Alert.alert(
       'Confirmation d’achat',
       `Es-tu sûr·e de vouloir acheter ${amount} coins ?`,
@@ -126,6 +128,8 @@ export default function ProfileScreen() {
   }
 
   const confirmBuyTicket = () => {
+    const ticket = 15
+    const amount = ticket * 100
     Alert.alert(
       'Confirmation d’achat',
       'Voulez-vous acheter un billet pour 15 € ?',
@@ -136,7 +140,7 @@ export default function ProfileScreen() {
           style: 'default',
           onPress: () => {
             setTicketModalVisible(false)
-            prepareAndOpenPaymentSheet(15)
+            prepareAndOpenPaymentSheet(amount)
           },
         },
       ],
