@@ -233,21 +233,15 @@ export default function HomeScreen() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <Pressable
-          style={styles.modalBackdrop}
-          onPress={() => setModalVisible(false)}
-        >
-          <Pressable
-            style={styles.modalView}
-            onPress={(e) => e.stopPropagation()}
-          >
+        <Pressable style={styles.modalBackdrop} onPress={() => setModalVisible(false)}>
+          <Pressable style={styles.modalView} onPress={(e) => e.stopPropagation()}>
             <Text style={styles.modalName}>{selectedStand?.name}</Text>
             <Text>{selectedStand?.description}</Text>
             <Pressable
               style={styles.seeMoreButton}
               onPress={() =>
                 router.push({
-                  pathname: "/guest/stand/[id]",
+                  pathname: '/guest/stand/[id]',
                   params: { id: selectedStand?.id },
                 })
               }
@@ -264,21 +258,15 @@ export default function HomeScreen() {
         visible={concertModalVisible}
         onRequestClose={() => setConcertModalVisible(false)}
       >
-        <Pressable
-          style={styles.modalBackdrop}
-          onPress={() => setConcertModalVisible(false)}
-        >
-          <Pressable
-            style={styles.modalView}
-            onPress={(e) => e.stopPropagation()}
-          >
+        <Pressable style={styles.modalBackdrop} onPress={() => setConcertModalVisible(false)}>
+          <Pressable style={styles.modalView} onPress={(e) => e.stopPropagation()}>
             <Text style={styles.modalName}>{selectedConcert?.title}</Text>
             <Text>{selectedConcert?.horaire}</Text>
             <Pressable
               style={styles.seeMoreButton}
               onPress={() =>
                 router.push({
-                  pathname: "/guest/stage/[id]",
+                  pathname: '/guest/stage/[id]',
                   params: { id: selectedConcert?.id },
                 })
               }
@@ -292,8 +280,8 @@ export default function HomeScreen() {
   )
 }
 
-const PRIMARY = "#EB7F15";
-const SECONDARY = "#FCF6DF";
+const PRIMARY = '#EB7F15'
+const SECONDARY = '#FCF6DF'
 
 const styles = StyleSheet.create({
   container: {

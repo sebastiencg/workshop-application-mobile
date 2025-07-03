@@ -120,7 +120,7 @@ export default function QRScanScreen() {
         </TouchableWithoutFeedback>
       </Modal>
 
-      {user?.billet && (
+      {user?.ticket && (
         <TouchableOpacity
           style={styles.floatingButton}
           onPress={() => {
