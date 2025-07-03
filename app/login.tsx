@@ -59,7 +59,7 @@ const LoginScreen = () => {
         throw new Error('User null')
       }
       setUser(user)
-      console.info(user.ofUser.roles)
+      console.info(user)
 
       router.replace('/guest/(tabs)')
     } catch (error: unknown) {
@@ -124,12 +124,25 @@ const LoginScreen = () => {
             firstName: 'Dev',
             lastName: 'User',
             username: 'dev_user',
-            tokens: 123,
+            token: 123,
             ofUser: {
               id: 999,
               roles: ['ROLE_USER', 'ROLE_EMPLOYEE'],
               username: 'dev_user',
-              billets: [],
+              tickets: [
+                {
+                  id: 1,
+                  startdate: '2025-01-01',
+                  enddate: '2025-12-31',
+                  isactive: true,
+                },
+                {
+                  id: 2,
+                  startdate: '2025-01-01',
+                  enddate: '2025-12-31',
+                  isactive: true,
+                },
+              ],
             },
           }
           setUser(mockUser)

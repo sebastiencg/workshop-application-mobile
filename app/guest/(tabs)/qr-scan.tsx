@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  ScrollView,
+  Image,
+  Animated,
 } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
-import { useNavigation } from '@react-navigation/native'
 
 export default function QRScanScreen() {
   const [permission, requestPermission] = useCameraPermissions()
@@ -22,15 +24,35 @@ export default function QRScanScreen() {
   const [amountToPay, setAmountToPay] = useState<number>(0)
   const [userTokens, setUserTokens] = useState<number>(100)
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
-  const [userQrData] = useState<string>('user123456') // TODO:implémenter la récup du QRCode de l'user
+  const [currentQRIndex, setCurrentQRIndex] = useState(0)
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true)
   const cameraRef = useRef(null)
   const { user } = useUser()
+  const slideAnimation = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     if (permission === null) {
       requestPermission()
     }
   }, [permission, requestPermission])
+
+  useEffect(() => {
+    if (modalVisible || qrModalVisible) {
+      Animated.timing(slideAnimation, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start()
+      setIsCameraActive(false)
+    } else {
+      Animated.timing(slideAnimation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start()
+      setIsCameraActive(true)
+    }
+  }, [modalVisible, qrModalVisible, slideAnimation])
 
   const handleScanned = (barcode: { type: string; data: string }) => {
     if (barcode.data !== scannedData) {
@@ -79,48 +101,78 @@ export default function QRScanScreen() {
     )
   }
 
+  const renderQRCodeWithLogo = (ticketId: number) => {
+    const qrValue = `/tickets/validate/${ticketId}`
+
+    return (
+      <View style={styles.qrCodeWrapper}>
+        <QRCode value={qrValue} size={200} backgroundColor="white" color="black" />
+        <Text style={styles.ticketIdText}>ID: {ticketId}</Text>
+      </View>
+    )
+  }
+
+  const translateY = slideAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [300, 0],
+  })
+
+  const nextTicket = () => {
+    if (user?.ofUser?.tickets && user.ofUser.tickets.length > 0) {
+      setCurrentQRIndex((prevIndex) =>
+        prevIndex === user?.ofUser?.tickets.length - 1 ? 0 : prevIndex + 1
+      )
+    }
+  }
+
+  const prevTicket = () => {
+    if (user?.ofUser?.tickets && user.ofUser.tickets.length > 0) {
+      setCurrentQRIndex((prevIndex) =>
+        prevIndex === 0 ? user?.ofUser?.tickets.length - 1 : prevIndex - 1
+      )
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scanneur de QR Code</Text>
       <View style={styles.cameraContainer}>
-        <CameraView
-          ref={cameraRef}
-          style={StyleSheet.absoluteFillObject}
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr'],
-          }}
-          onBarcodeScanned={({ type, data }) => {
-            if (data && !modalVisible) {
-              handleScanned({ type, data })
-            }
-          }}
-        />
+        {isCameraActive && (
+          <CameraView
+            ref={cameraRef}
+            style={StyleSheet.absoluteFillObject}
+            barcodeScannerSettings={{
+              barcodeTypes: ['qr'],
+            }}
+            onBarcodeScanned={({ type, data }) => {
+              if (data && !modalVisible) {
+                handleScanned({ type, data })
+              }
+            }}
+          />
+        )}
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={resetScanner}
-      >
-        <TouchableWithoutFeedback onPress={resetScanner}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.bottomMenu}>
-              <Text style={styles.menuTitle}>Détails du paiement</Text>
-              <Text style={styles.menuText}>Montant à payer : {amountToPay} tokens</Text>
-              <Text style={styles.menuText}>Vos tokens : {userTokens} tokens</Text>
-              <View style={styles.menuButtonContainer}>
-                <Button title="Payer" onPress={handlePayment} />
-                <View style={{ marginTop: 10 }}>
-                  <Button title="Annuler" onPress={resetScanner} color="#FF6347" />
-                </View>
+      {modalVisible && (
+        <View style={styles.modalContainer}>
+          <TouchableWithoutFeedback onPress={resetScanner}>
+            <View style={styles.modalBackdrop} />
+          </TouchableWithoutFeedback>
+          <Animated.View style={[styles.bottomMenu, { transform: [{ translateY }] }]}>
+            <Text style={styles.menuTitle}>Détails du paiement</Text>
+            <Text style={styles.menuText}>Montant à payer : {amountToPay} tokens</Text>
+            <Text style={styles.menuText}>Vos tokens : {userTokens} tokens</Text>
+            <View style={styles.menuButtonContainer}>
+              <Button title="Payer" onPress={handlePayment} />
+              <View style={{ marginTop: 10 }}>
+                <Button title="Annuler" onPress={resetScanner} color="#FF6347" />
               </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+          </Animated.View>
+        </View>
+      )}
 
-      {user?.ticket && (
+      {user?.ofUser?.tickets && user.ofUser.tickets.length > 0 && (
         <TouchableOpacity
           style={styles.floatingButton}
           onPress={() => {
@@ -131,27 +183,36 @@ export default function QRScanScreen() {
         </TouchableOpacity>
       )}
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={qrModalVisible}
-        onRequestClose={() => setQrModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <TouchableWithoutFeedback>
-            <View style={styles.bottomMenu}>
-              <Text style={styles.menuTitle}>Votre QR Code</Text>
-              <View style={styles.qrCodeContainer}>
-                <QRCode value={userQrData} size={200} backgroundColor="white" color="black" />
-              </View>
-              <Text style={styles.menuText}>{userQrData}</Text>
-              <View style={styles.menuButtonContainer}>
-                <Button title="Fermer" onPress={() => setQrModalVisible(false)} color="#FF6347" />
+      {qrModalVisible && user?.ofUser?.tickets && user.ofUser.tickets.length > 0 && (
+        <View style={styles.modalContainer}>
+          <TouchableWithoutFeedback onPress={() => setQrModalVisible(false)}>
+            <View style={styles.modalBackdrop} />
+          </TouchableWithoutFeedback>
+          <Animated.View style={[styles.bottomMenu, { transform: [{ translateY }] }]}>
+            <Text style={styles.menuTitle}>Vos QR Codes</Text>
+
+            <View style={styles.qrCodeContainer}>
+              {renderQRCodeWithLogo(user.ofUser.tickets[currentQRIndex].id)}
+
+              <View style={styles.qrNavigation}>
+                <TouchableOpacity onPress={prevTicket} style={styles.navButton}>
+                  <Text style={styles.navButtonText}>Précédent</Text>
+                </TouchableOpacity>
+                <Text style={styles.pageIndicator}>
+                  {currentQRIndex + 1}/{user.ofUser.tickets.length}
+                </Text>
+                <TouchableOpacity onPress={nextTicket} style={styles.navButton}>
+                  <Text style={styles.navButtonText}>Suivant</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </TouchableWithoutFeedback>
+
+            <View style={styles.menuButtonContainer}>
+              <Button title="Fermer" onPress={() => setQrModalVisible(false)} color="#FF6347" />
+            </View>
+          </Animated.View>
         </View>
-      </Modal>
+      )}
     </View>
   )
 }
@@ -176,10 +237,25 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 20,
   },
+  modalContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'flex-end',
+    zIndex: 1000,
+  },
+  modalBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   bottomMenu: {
     backgroundColor: '#FCF6DF',
@@ -227,13 +303,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-
   qrCodeContainer: {
-    padding: 20,
+    height: 320,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCodeWrapper: {
+    padding: 15,
     backgroundColor: 'white',
     borderRadius: 10,
-    marginVertical: 20,
-    marginHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -241,5 +320,33 @@ const styles = StyleSheet.create({
     elevation: 2,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  ticketIdText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+  },
+  qrNavigation: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  navButton: {
+    padding: 8,
+    backgroundColor: '#EB7F15',
+    borderRadius: 8,
+  },
+  navButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  pageIndicator: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
 })

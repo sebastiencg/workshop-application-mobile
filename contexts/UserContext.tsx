@@ -11,8 +11,15 @@ export interface User {
     id: number
     roles: string[]
     username?: string
-    billets?: any[]
+    tickets?: Ticket[]
   }
+}
+
+export type Ticket = {
+  id: number
+  startdATE: string
+  endate: string
+  isactive: boolean
 }
 
 interface UserContextType {

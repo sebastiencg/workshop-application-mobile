@@ -14,6 +14,7 @@ import {
 import QRCode from 'react-native-qrcode-svg'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
+import { fetcherPost } from '@/services/apiService'
 
 export default function QRScanScreen() {
   const router = useRouter()
@@ -22,6 +23,7 @@ export default function QRScanScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [canEnter, setCanEnter] = useState<boolean>(true)
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true)
   const cameraRef = useRef(null)
   const user = useUser()
   const [userQrData] = useState<any>(user)
@@ -32,7 +34,30 @@ export default function QRScanScreen() {
     }
   }, [permission, requestPermission])
 
-  const handleScanned = (barcode: { type: string; data: string }) => {
+  useEffect(() => {
+    if (modalVisible || qrModalVisible) {
+      setIsCameraActive(false)
+    } else {
+      setIsCameraActive(true)
+    }
+  }, [modalVisible, qrModalVisible])
+
+  const handleScanned = async (barcode: { type: string; data: string }) => {
+    try {
+      const response = await fetcherPost(barcode.data)
+      console.log(response)
+      if (response.isValid === true) {
+        setCanEnter(true)
+        handleContinue()
+      } else {
+        setCanEnter(false)
+        handleDeny()
+      }
+    } catch (error) {
+      console.error('Error parsing QR code data:', error)
+    }
+
+    console.warn(barcode, 'scanned')
     if (barcode.data !== scannedData) {
       setScannedData(barcode.data)
       setCanEnter(true)
@@ -53,11 +78,6 @@ export default function QRScanScreen() {
   const handleDeny = () => {
     Alert.alert('Entrée refusée', "L'utilisateur ne peut pas accéder à l'événement.")
     resetScanner()
-  }
-
-  const navigateToRandomStand = () => {
-    const randomStandId = Math.floor(Math.random() * 3) + 1
-    router.push(`/employee/stand/${randomStandId}`)
   }
 
   if (!permission) {
@@ -81,18 +101,20 @@ export default function QRScanScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Billeterie</Text>
       <View style={styles.cameraContainer}>
-        <CameraView
-          ref={cameraRef}
-          style={StyleSheet.absoluteFillObject}
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr'],
-          }}
-          onBarcodeScanned={({ type, data }) => {
-            if (data && !modalVisible) {
-              handleScanned({ type, data })
-            }
-          }}
-        />
+        {isCameraActive && (
+          <CameraView
+            ref={cameraRef}
+            style={StyleSheet.absoluteFillObject}
+            barcodeScannerSettings={{
+              barcodeTypes: ['qr'],
+            }}
+            onBarcodeScanned={({ type, data }) => {
+              if (data && !modalVisible) {
+                handleScanned({ type, data })
+              }
+            }}
+          />
+        )}
       </View>
 
       <Modal
@@ -123,10 +145,7 @@ export default function QRScanScreen() {
                 </>
               )}
               <View style={styles.menuButtonContainer}>
-                <Button title="Confirmer" onPress={handleContinue} color="#4CAF50" />
-                <View style={{ marginTop: 10 }}>
-                  <Button title="Refuser" onPress={handleDeny} color="#FF6347" />
-                </View>
+                <Button title="Fermer" onPress={resetScanner} color="#FF6347" />
               </View>
             </View>
           </View>
