@@ -10,8 +10,9 @@ import Animated, {
 import { ThemedView } from '@/components/ThemedView'
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground'
 import { useColorScheme } from '@/hooks/useColorScheme'
+import React from "react";
 
-const HEADER_HEIGHT = 250
+const HEADER_HEIGHT = 300
 
 type Props = PropsWithChildren<{
   headerImage: ReactElement
@@ -80,5 +81,6 @@ const styles = StyleSheet.create({
     padding: 32,
     gap: 16,
     overflow: 'hidden',
+    backgroundColor: '#fff',
   },
 })

@@ -52,7 +52,7 @@ const concerts: Concert[] = [
   {
     id: 1,
     title: 'Concert Rock',
-    horaire: '21h00 - 22h30',
+    horaire: '15h30 - 22h30',
     latitude: 45.7205,
     longitude: 4.8157,
     image: 'https://img.icons8.com/?size=150&id=12035',
@@ -60,7 +60,7 @@ const concerts: Concert[] = [
   {
     id: 2,
     title: 'DJ Set Electro',
-    horaire: '23h00 - 00h30',
+    horaire: '14h00 - 00h30',
     latitude: 45.7215,
     longitude: 4.8149,
     image: 'https://img.icons8.com/?size=150&id=HfymTjyRCG1f',
@@ -233,35 +233,67 @@ export default function HomeScreen() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalView}>
+        <Pressable
+          style={styles.modalBackdrop}
+          onPress={() => setModalVisible(false)}
+        >
+          <Pressable
+            style={styles.modalView}
+            onPress={(e) => e.stopPropagation()}
+          >
             <Text style={styles.modalName}>{selectedStand?.name}</Text>
             <Text>{selectedStand?.description}</Text>
-            <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeText}>Fermer</Text>
+            <Pressable
+              style={styles.seeMoreButton}
+              onPress={() =>
+                router.push({
+                  pathname: "/guest/stand/[id]",
+                  params: { id: selectedStand?.id },
+                })
+              }
+            >
+              <Text style={styles.closeText}>voir plus</Text>
             </Pressable>
-          </View>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
+
       <Modal
         animationType="slide"
         transparent
         visible={concertModalVisible}
         onRequestClose={() => setConcertModalVisible(false)}
       >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalView}>
+        <Pressable
+          style={styles.modalBackdrop}
+          onPress={() => setConcertModalVisible(false)}
+        >
+          <Pressable
+            style={styles.modalView}
+            onPress={(e) => e.stopPropagation()}
+          >
             <Text style={styles.modalName}>{selectedConcert?.title}</Text>
             <Text>{selectedConcert?.horaire}</Text>
-            <Pressable style={styles.closeButton} onPress={() => setConcertModalVisible(false)}>
-              <Text style={styles.closeText}>Fermer</Text>
+            <Pressable
+              style={styles.seeMoreButton}
+              onPress={() =>
+                router.push({
+                  pathname: "/guest/stage/[id]",
+                  params: { id: selectedConcert?.id },
+                })
+              }
+            >
+              <Text style={styles.closeText}>voir plus</Text>
             </Pressable>
-          </View>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
     </View>
   )
 }
+
+const PRIMARY = "#EB7F15";
+const SECONDARY = "#FCF6DF";
 
 const styles = StyleSheet.create({
   container: {
@@ -295,6 +327,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  seeMoreButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: PRIMARY,
+    alignItems: 'center',
+    borderRadius: 8,
   },
   closeButton: {
     marginTop: 20,

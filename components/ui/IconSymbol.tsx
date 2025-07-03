@@ -27,6 +27,7 @@ const MAPPING = {
   logout: 'logout',
   map: 'map',
   'food-bank': 'food-bank',
+  'chevron.left': 'chevron-left',
 } as IconMapping
 
 /**
