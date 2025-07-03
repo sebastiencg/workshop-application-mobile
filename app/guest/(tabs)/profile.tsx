@@ -48,7 +48,7 @@ export default function ProfileScreen() {
   const prepareAndOpenPaymentSheet = async (amountCoins: number) => {
     try {
       const data = await fetcherPost('/payment-intent-ticket', { amountCoins })
-      const { paymentIntent, ephemeralKey, customer } = data
+      const { paymentIntent, ephemeralKey, customer, cartId } = data
 
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: 'Saucisse Bar',
@@ -73,7 +73,7 @@ export default function ProfileScreen() {
         }
       } else {
         Alert.alert('Succès', 'Paiement effectué !')
-        await fetcher('/coins/credit')
+        await fetcherPost('/coins/credit', {cartId, amountCoins})
       }
     } catch (err: any) {
       console.error(err)
