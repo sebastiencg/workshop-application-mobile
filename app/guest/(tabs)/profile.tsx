@@ -34,10 +34,10 @@ export default function ProfileScreen() {
   const [activeCard, setActiveCard] = useState<number | null>(null)
 
   const tokenPackages = [
-    { amount: 50, bonus: 0, color: ['#222222', '#333333'] },
-    { amount: 100, bonus: 10, color: ['#222222', '#333333'] },
-    { amount: 200, bonus: 30, color: ['#222222', '#333333'] },
-    { amount: 500, bonus: 100, color: ['#222222', '#333333'] },
+    { amount: 50, bonus: 0, color: ['#FCF6DF', '#FCF6DF'] },
+    { amount: 100, bonus: 10, color: ['#FCF6DF', '#FCF6DF'] },
+    { amount: 200, bonus: 30, color: ['#FCF6DF', '#FCF6DF'] },
+    { amount: 500, bonus: 100, color: ['#FCF6DF', '#FCF6DF'] },
   ]
 
   const expenses = [
@@ -161,7 +161,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.inputRow}>
           <ThemedText type="title" style={styles.h1}>
-            Coucou toi
+            Votre profil
           </ThemedText>
           <Pressable onPress={confirmLogout}>
             <IconSymbol size={28} name="logout" color="#000" />
@@ -175,7 +175,7 @@ export default function ProfileScreen() {
           </Pressable>
         )}
 
-        {user?.ticket ? (
+        {user ? (
           <ThemedView style={styles.balanceCard}>
             <ThemedText type="subtitle" style={styles.balanceLabel}>
               Ton solde
@@ -215,7 +215,12 @@ export default function ProfileScreen() {
                 <View style={styles.expenseContent}>
                   <View style={styles.leftSection}>
                     <View style={styles.iconContainer}>
-                      <IconSymbol size={24} name="map" style={styles.expenseIcon} color="#eee" />
+                      <IconSymbol
+                        size={24}
+                        name="map"
+                        style={styles.expenseIcon}
+                        color={'#EB7F15'}
+                      />
                     </View>
                     <View style={styles.expenseDetails}>
                       <ThemedText style={styles.expensePlace}>{exp.place}</ThemedText>
@@ -293,10 +298,10 @@ export default function ProfileScreen() {
                 maximumValue={1000}
                 step={10}
                 value={customSliderValue}
-                onValueChange={setCustomSliderValue}
-                minimumTrackTintColor="#2196F3"
-                maximumTrackTintColor="#D1D1D1"
-                thumbTintColor="#2196F3"
+                onValueChange={(value) => setCustomSliderValue(value)}
+                minimumTrackTintColor="#EB7F15"
+                maximumTrackTintColor="#EB7F15"
+                thumbTintColor="#EB7F15"
               />
 
               <View style={styles.sliderLabels}>
@@ -320,7 +325,7 @@ export default function ProfileScreen() {
               style={styles.buyCustomButton}
             >
               <LinearGradient
-                colors={['#2196F3', '#1976D2'] as any}
+                colors={['#EB7F15', '#d16a00'] as any}
                 style={styles.buyButtonGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -374,24 +379,70 @@ export default function ProfileScreen() {
 }
 
 const FONT_SIZE_BODY = 16
+const INPUT_HEIGHT = 48
+const BORDER_RADIUS = 8
 const SCREEN_WIDTH = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: '#fff' },
+  flex: { flex: 1, backgroundColor: '#ffffff' },
   container: { padding: 20, gap: 20, marginTop: 48 },
 
-  inputRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  h1: { color: '#000' },
-  h2: { fontSize: 20, fontWeight: '600', marginTop: 32, color: '#333' },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  h1: {
+    color: '#000',
+  },
+  h2: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 32,
+    color: '#333',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  /* Solde */
 
-  /* Bouton admin */
+  balanceLabel: {
+    marginBottom: 4,
+    fontSize: 16,
+    opacity: 0.7,
+    color: '#FCF6DF',
+  },
+  balanceValue: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FCF6DF',
+  },
+
+  /* Dépenses */
+
+  tokenShopButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: '#EB7F15',
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+
   adminButton: {
     paddingVertical: 16,
     paddingHorizontal: 20,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#FCF6DF',
     alignItems: 'center',
     borderLeftWidth: 4,
-    borderLeftColor: '#000',
+    borderLeftColor: '#EB7F15',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -401,17 +452,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  /* Solde */
-  balanceCard: {
-    padding: 30,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  balanceLabel: { marginBottom: 4, fontSize: 16, opacity: 0.7, color: '#fff' },
-  balanceValue: { fontSize: 28, fontWeight: '700', color: '#fff' },
   addCoinsButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -426,49 +466,6 @@ const styles = StyleSheet.create({
   },
   addCoinsText: { color: '#fff', fontSize: 14, fontWeight: '500' },
 
-  /* Bouton achat billet */
-  tokenShopButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '500' },
-
-  /* Dépenses */
-  expensesList: { gap: 6, marginBottom: 30 },
-  expenseRow: { backgroundColor: '#f8f9fa', borderRadius: 12, padding: 16 },
-  lastExpenseRow: { marginBottom: 40 },
-  expenseContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  leftSection: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#e0e0e0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  expenseIcon: { opacity: 0.6 },
-  expenseDetails: { flex: 1 },
-  expensePlace: { fontSize: 16, fontWeight: '500', marginBottom: 2, color: '#333' },
-  expenseTime: { fontSize: 14, color: '#666' },
-  expenseAmount: { fontSize: 16, fontWeight: '600', color: '#333' },
-
-  /* Empty state */
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-  },
-  emptyIcon: { opacity: 0.4, marginBottom: 12, color: '#999' },
-  emptyText: { fontSize: 16, opacity: 0.6, textAlign: 'center', color: '#666' },
-
   /* Modal générique */
   modalBackdrop: {
     flex: 1,
@@ -479,10 +476,14 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '90%',
     maxHeight: '90%',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 24,
     elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -490,38 +491,78 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  modalTitle: { fontSize: 22, fontWeight: '700', color: '#333' },
-  closeButton: { padding: 8 },
-  modalInfo: { marginBottom: 20, fontSize: 15, color: '#666' },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#333',
+  },
+  closeButton: {
+    padding: 8,
+  },
+  modalInfo: {
+    marginBottom: 20,
+    fontSize: 15,
+    color: '#666',
+  },
 
-  /* Cards */
-  cardsContainer: { paddingVertical: 8, paddingHorizontal: 4, gap: 10 },
+  cardsContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    gap: 10,
+  },
+
+  divider: { height: 1, backgroundColor: '#E0E0E0', marginVertical: 24 },
+  customAmountTitle: { fontSize: 18, fontWeight: '600', marginBottom: 12, color: '#333' },
+  sliderContainer: { marginBottom: 24 },
+  slider: { width: '100%', height: 40 },
+  sliderLabels: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 },
   card: {
-    backgroundColor: 'white',
     width: SCREEN_WIDTH * 0.35,
     height: 160,
     borderRadius: 16,
     overflow: 'hidden',
     marginHorizontal: 4,
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    backgroundColor: '#FCF6DF',
   },
-  activeCard: { borderWidth: 2, borderColor: '#2196F3', backgroundColor: '#444' },
-  cardGradient: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
-  cardContent: { alignItems: 'center' },
-  cardTitle: { fontSize: 32, fontWeight: '700', color: '#fff' },
-  coinsLabel: { fontSize: 16, color: '#fff', marginBottom: 8 },
+  activeCard: {},
+  cardGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  cardContent: {
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: 'black',
+  },
+  coinsLabel: {
+    fontSize: 16,
+    color: 'black',
+    marginBottom: 8,
+  },
+  amountText: { fontSize: FONT_SIZE_BODY, fontWeight: '500' },
   bonusBadge: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
     marginVertical: 6,
+    borderWidth: 1,
+    borderColor: '#EB7F15',
+    borderRadius: 60,
   },
 
   bonusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#2196F3',
+    color: '#EB7F15',
   },
   priceText: {
     marginTop: 6,
@@ -529,14 +570,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'black',
   },
-
-  /* Slider */
-  divider: { height: 1, backgroundColor: '#e0e0e0', marginVertical: 24 },
-  customAmountTitle: { fontSize: 18, fontWeight: '600', marginBottom: 12, color: '#333' },
-  sliderContainer: { marginBottom: 24 },
-  slider: { width: '100%', height: 40 },
-  sliderLabels: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 },
-  sliderValue: { fontWeight: '600', color: '#2196F3' },
+  sliderValue: {
+    fontWeight: '600',
+    color: '#EB7F15',
+  },
   totalValue: {
     textAlign: 'center',
     marginTop: 48,
@@ -545,29 +582,163 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
 
-  buyCustomButton: { height: 50, borderRadius: 25, overflow: 'hidden' },
-  buyButtonGradient: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  buyButtonText: { color: 'white', fontSize: 18, fontWeight: '600' },
+  buyCustomButton: {
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+  },
+  buyButtonGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buyButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  input: {
+    flex: 1,
+    height: INPUT_HEIGHT,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  buyButton: {
+    height: INPUT_HEIGHT,
+    paddingHorizontal: 20,
+    borderBottomEndRadius: BORDER_RADIUS,
+    borderTopEndRadius: BORDER_RADIUS,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+  },
 
-  /* Billet */
+  emptyIcon: {
+    opacity: 0.4,
+    marginBottom: 12,
+    color: '#EB7F15',
+  },
+
+  emptyText: {
+    fontSize: 16,
+    opacity: 0.6,
+    textAlign: 'center',
+    color: '#666',
+  },
+
+  /* Dépenses */
+  expensesList: {
+    gap: 6,
+    marginBottom: 30,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+
+  expenseIcon: {
+    opacity: 1,
+  },
+
+  expenseDetails: {
+    flex: 1,
+  },
+
+  expensePlace: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 2,
+    color: '#333',
+  },
+
+  rightSection: {
+    alignItems: 'flex-end',
+  },
+
+  expenseAmount: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+
+  balanceCard: {
+    padding: 30,
+    borderRadius: 12,
+    alignItems: 'center',
+    backgroundColor: '#333',
+    position: 'relative',
+  },
+
+  expenseRow: {
+    backgroundColor: '#FCF6DF',
+    borderRadius: 12,
+    padding: 16,
+  },
+
+  lastExpenseRow: {
+    marginBottom: 40,
+  },
+
+  expenseContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
   ticketCard: {
     borderRadius: 16,
     overflow: 'hidden',
     marginVertical: 20,
     padding: 20,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
   },
-  ticketContent: { alignItems: 'center' },
-  ticketTitle: { fontSize: 24, fontWeight: '700', color: '#FFF', marginBottom: 8 },
-  ticketDescription: { fontSize: 16, color: '#FFF', textAlign: 'center', marginBottom: 16 },
+  ticketContent: {
+    alignItems: 'center',
+  },
+  ticketTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: 'black',
+    marginBottom: 8,
+  },
+  ticketDescription: {
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
   paymentButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#EB7F15',
     paddingVertical: 15,
     paddingHorizontal: 20,
     marginTop: 24,
     borderRadius: 25,
     alignItems: 'center',
   },
-  paymentButtonText: { color: 'white', fontSize: 16, fontWeight: '600' },
+  paymentButtonText: {},
 })
