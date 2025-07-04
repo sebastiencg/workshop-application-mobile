@@ -24,12 +24,7 @@ const stands: Stand[] = [
     id: 3,
     name: 'Goodies et smarties',
     img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
-  },
-  {
-    id: 4,
-    name: 'Goodies et smarties',
-    img: 'https://images.happycow.net/venues/1024/25/39/hcmp253902_1228597.jpeg',
-  },
+  }
 ]
 
 export default function HomeScreen() {
@@ -70,6 +65,7 @@ const styles = StyleSheet.create({
     gap: 24,
     marginTop: 48,
     backgroundColor: 'white',
+    minHeight: '100%',
   },
 
   listContainer: { padding: 8, marginTop: 24 },

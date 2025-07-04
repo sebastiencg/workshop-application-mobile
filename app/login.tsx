@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+// @ts-ignore
 import logoImage from '@/assets/images/logo.png'
 import { fetcher, fetcherPost } from '@/services/apiService'
 import { useUser } from '@/contexts/UserContext'
@@ -58,8 +59,8 @@ const LoginScreen = () => {
         await AsyncStorage.removeItem('hasSession')
         throw new Error('User null')
       }
-      setUser(user);
-      console.info(user.ofUser.roles);
+      setUser(user)
+      console.info(user)
 
       router.replace('/guest/(tabs)')
     } catch (error: unknown) {
@@ -124,16 +125,29 @@ const LoginScreen = () => {
             firstName: 'Dev',
             lastName: 'User',
             username: 'dev_user',
-            tokens: 123,
+            token: 123,
             ofUser: {
               id: 999,
               roles: ['ROLE_USER', 'ROLE_EMPLOYEE'],
               username: 'dev_user',
-              billets: [],
+              tickets: [
+                {
+                  id: 1,
+                  startdate: '2025-01-01',
+                  enddate: '2025-12-31',
+                  isactive: true,
+                },
+                {
+                  id: 2,
+                  startdate: '2025-01-01',
+                  enddate: '2025-12-31',
+                  isactive: true,
+                },
+              ],
             },
           }
-          setUser(mockUser);
-          AsyncStorage.setItem("hasSession", "true");
+          setUser(mockUser)
+          AsyncStorage.setItem('hasSession', 'true')
           AsyncStorage.setItem('token', 'dev-mode-token')
           router.replace('/guest/(tabs)')
         }}
@@ -151,6 +165,10 @@ const LoginScreen = () => {
   )
 }
 
+const DARK_GREY = '#333';
+const PRIMARY = '#EB7F15';
+const SECONDARY = '#FCF6DF'
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -165,7 +183,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: SECONDARY,
     padding: 10,
     borderRadius: 20,
     marginVertical: 10,
@@ -181,12 +199,12 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   button: {
-    backgroundColor: '#EB7F15',
+    backgroundColor: PRIMARY,
     padding: 15,
     borderRadius: 30,
     width: '80%',
     alignItems: 'center',
-    marginTop: 20,
+    marginVertical: 20,
   },
   buttonText: {
     color: 'white',
@@ -214,11 +232,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: '#5e5e5e',
+    color: DARK_GREY,
   },
   footerLinkText: {
     fontSize: 14,
-    color: '#EB7F15',
+    color: PRIMARY,
     fontWeight: 'bold',
   },
 })

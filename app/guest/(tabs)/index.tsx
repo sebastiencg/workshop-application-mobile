@@ -2,7 +2,7 @@ import * as Location from 'expo-location'
 import React, { useEffect, useRef, useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { LatLng, Marker, Polygon } from 'react-native-maps'
-import { router } from "expo-router";
+import { router } from 'expo-router'
 
 type Stand = {
   id: number
@@ -237,13 +237,12 @@ export default function HomeScreen() {
         <Pressable style={styles.modalBackdrop} onPress={() => setModalVisible(false)}>
           <Pressable style={styles.modalView} onPress={(e) => e.stopPropagation()}>
             <Text style={styles.modalName}>{selectedStand?.name}</Text>
-            <Text>{selectedStand?.description}</Text>
             <Pressable
               style={styles.seeMoreButton}
               onPress={() =>
                 router.push({
                   pathname: '/guest/stand/[id]',
-                  params: { id: selectedStand?.id },
+                  params: { id: String(selectedStand?.id) },
                 })
               }
             >
@@ -261,14 +260,14 @@ export default function HomeScreen() {
       >
         <Pressable style={styles.modalBackdrop} onPress={() => setConcertModalVisible(false)}>
           <Pressable style={styles.modalView} onPress={(e) => e.stopPropagation()}>
-            <Text style={styles.modalName}>{selectedConcert?.title}</Text>
-            <Text>{selectedConcert?.horaire}</Text>
+            <Text style={styles.modalName}>Scène : {selectedConcert?.title}</Text>
+            <Text style={styles.modalDescription}>{selectedConcert?.horaire}</Text>
             <Pressable
               style={styles.seeMoreButton}
               onPress={() =>
                 router.push({
                   pathname: '/guest/stage/[id]',
-                  params: { id: selectedConcert?.id },
+                  params: { id: String(selectedConcert?.id) },
                 })
               }
             >
@@ -315,10 +314,14 @@ const styles = StyleSheet.create({
   modalName: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+  modalDescription: {
+    textAlign: 'center',
   },
   seeMoreButton: {
-    marginTop: 16,
+    marginVertical: 20,
     paddingVertical: 12,
     paddingHorizontal: 20,
     backgroundColor: PRIMARY,

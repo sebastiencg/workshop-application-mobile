@@ -1,19 +1,11 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  Alert,
-  Button,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native'
+import { Button, Modal, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
+import { fetcherPost } from '@/services/apiService'
 
 export default function QRScanScreen() {
   const router = useRouter()
@@ -22,6 +14,7 @@ export default function QRScanScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [canEnter, setCanEnter] = useState<boolean>(true)
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false)
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true)
   const cameraRef = useRef(null)
   const user = useUser()
   const [userQrData] = useState<any>(user)
@@ -32,10 +25,33 @@ export default function QRScanScreen() {
     }
   }, [permission, requestPermission])
 
-  const handleScanned = (barcode: { type: string; data: string }) => {
-    if (barcode.data !== scannedData) {
-      setScannedData(barcode.data)
-      setCanEnter(true)
+  useEffect(() => {
+    if (modalVisible || qrModalVisible) {
+      setIsCameraActive(false)
+    } else {
+      setIsCameraActive(true)
+    }
+  }, [modalVisible, qrModalVisible])
+
+  const handleScanned = async (barcode: { type: string; data: string }) => {
+    if (barcode.data === scannedData && modalVisible) {
+      return
+    }
+
+    setScannedData(barcode.data)
+
+    try {
+      const response = await fetcherPost(barcode.data)
+      console.log('API Response:', response)
+
+      if (response.isValid === true) {
+        setCanEnter(true)
+      } else {
+        setCanEnter(false)
+      }
+      setModalVisible(true)
+    } catch (error) {
+      setCanEnter(false)
       setModalVisible(true)
     }
   }
@@ -43,21 +59,6 @@ export default function QRScanScreen() {
   const resetScanner = () => {
     setScannedData(null)
     setModalVisible(false)
-  }
-
-  const handleContinue = () => {
-    Alert.alert('Entrée accordée', "L'utilisateur peut accéder à l'événement.")
-    resetScanner()
-  }
-
-  const handleDeny = () => {
-    Alert.alert('Entrée refusée', "L'utilisateur ne peut pas accéder à l'événement.")
-    resetScanner()
-  }
-
-  const navigateToRandomStand = () => {
-    const randomStandId = Math.floor(Math.random() * 3) + 1
-    router.push(`/employee/stand/${randomStandId}`)
   }
 
   if (!permission) {
@@ -79,20 +80,23 @@ export default function QRScanScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Billeterie</Text>
+      <Text style={styles.title}>Billetterie</Text>
+      <Text style={styles.description}>Flash le QR code du visiteur et laisse la magie opérer. Accès garanti (ou pas) !</Text>
       <View style={styles.cameraContainer}>
-        <CameraView
-          ref={cameraRef}
-          style={StyleSheet.absoluteFillObject}
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr'],
-          }}
-          onBarcodeScanned={({ type, data }) => {
-            if (data && !modalVisible) {
-              handleScanned({ type, data })
-            }
-          }}
-        />
+        {isCameraActive && (
+          <CameraView
+            ref={cameraRef}
+            style={StyleSheet.absoluteFillObject}
+            barcodeScannerSettings={{
+              barcodeTypes: ['qr'],
+            }}
+            onBarcodeScanned={({ type, data }) => {
+              if (data && !modalVisible) {
+                handleScanned({ type, data })
+              }
+            }}
+          />
+        )}
       </View>
 
       <Modal
@@ -116,17 +120,14 @@ export default function QRScanScreen() {
               ) : (
                 <>
                   <View style={styles.statusContainer}>
-                    <IconSymbol name="c.circle" size={60} color="#F44336" />
+                    <IconSymbol name="cross.circle" size={60} color="#F44336" />
                   </View>
                   <Text style={[styles.menuText, styles.errorText]}>Entrée refusée</Text>
                   <Text style={styles.menuText}>Ticket non valide pour cet événement</Text>
                 </>
               )}
               <View style={styles.menuButtonContainer}>
-                <Button title="Confirmer" onPress={handleContinue} color="#4CAF50" />
-                <View style={{ marginTop: 10 }}>
-                  <Button title="Refuser" onPress={handleDeny} color="#FF6347" />
-                </View>
+                <Button title="Fermer" onPress={resetScanner} color="#FF6347" />
               </View>
             </View>
           </View>
@@ -140,13 +141,18 @@ export default function QRScanScreen() {
         onRequestClose={() => setQrModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => setQrModalVisible(false)}>
             <View style={styles.bottomMenu}>
               <Text style={styles.menuTitle}>Votre QR Code</Text>
               <View style={styles.qrCodeContainer}>
-                <QRCode value={'oui'} size={200} backgroundColor="white" color="black" />
+                <QRCode
+                  value={userQrData?.id || 'default_user_data'}
+                  size={200}
+                  backgroundColor="white"
+                  color="black"
+                />
               </View>
-              <Text style={styles.menuText}>{userQrData.username}</Text>
+              <Text style={styles.menuText}>{userQrData?.username || 'Utilisateur inconnu'}</Text>
               <View style={styles.menuButtonContainer}>
                 <Button title="Fermer" onPress={() => setQrModalVisible(false)} color="#FF6347" />
               </View>
@@ -162,7 +168,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    paddingTop: 40,
+    paddingTop: 80,
     backgroundColor: 'white',
   },
   title: {
@@ -170,6 +176,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     alignSelf: 'center',
+  },
+  description: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 24,
   },
   cameraContainer: {
     width: '100%',
