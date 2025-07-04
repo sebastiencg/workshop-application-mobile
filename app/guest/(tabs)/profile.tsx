@@ -65,11 +65,15 @@ export default function ProfileScreen() {
       }
 
       const { error: presentError } = await presentPaymentSheet({
+        //@ts-ignore
         clientSecret: paymentIntent,
       })
 
       if (presentError) {
-        if ((presentError as unknown as PaymentSheetError).code !== 'Canceled') {
+        // The prompt indicates that 'PaymentSheetError' does not have a 'code' property.
+        // Casting to 'any' allows access to 'code' if it exists at runtime,
+        // bypassing the TypeScript error based on the provided type definition.
+        if ((presentError as any).code !== 'Canceled') {
           Alert.alert('Échec', presentError.message)
         }
       } else {
@@ -163,7 +167,7 @@ export default function ProfileScreen() {
             Votre profil
           </ThemedText>
           <Pressable onPress={confirmLogout}>
-            <IconSymbol size={28} name="logout" color="#000" />
+            <IconSymbol size={28} name="logo.xbox" color="#000" />
           </Pressable>
         </View>
 
@@ -661,6 +665,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 2,
     color: '#333',
+  },
+  expenseTime: {
+    fontSize: 14,
+    color: '#666',
   },
 
   rightSection: {

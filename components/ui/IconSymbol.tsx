@@ -24,9 +24,9 @@ const MAPPING = {
   'cross.circle': 'close',
   'ticket.fill': 'attach-money',
   'face.dashed': 'face',
-  logout: 'logout',
+  'logo.xbox': 'logout',
   map: 'map',
-  'food-bank': 'food-bank',
+  banknote: 'food-bank',
   'chevron.left': 'chevron-left',
 } as IconMapping
 

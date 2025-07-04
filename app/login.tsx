@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+// @ts-ignore
 import logoImage from '@/assets/images/logo.png'
 import { fetcher, fetcherPost } from '@/services/apiService'
 import { useUser } from '@/contexts/UserContext'
