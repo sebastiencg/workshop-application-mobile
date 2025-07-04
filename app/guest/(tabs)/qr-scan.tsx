@@ -11,8 +11,8 @@ import {
   View,
   ScrollView,
   Image,
-  Animated,
-} from 'react-native'
+  Animated, Pressable
+} from "react-native";
 import QRCode from 'react-native-qrcode-svg'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { useUser } from '@/contexts/UserContext'
@@ -207,16 +207,16 @@ export default function QRScanScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-
-            <View style={styles.menuButtonContainer}>
-              <Button title="Fermer" onPress={() => setQrModalVisible(false)} color="#FF6347" />
-            </View>
           </Animated.View>
         </View>
       )}
     </View>
   )
 }
+const DARK_GREY = "#333";
+const LIGHT_GREY = "#666";
+const PRIMARY = "#EB7F15";
+const SECONDARY = "#FCF6DF";
 
 const styles = StyleSheet.create({
   container: {
@@ -289,9 +289,13 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   menuButtonContainer: {
+    height: 50,
+    borderRadius: 25,
+    overflow: "hidden",
+    backgroundColor: PRIMARY,
+    alignItems: "center",
+    justifyContent: "center",
     width: '100%',
-    paddingHorizontal: 20,
-    marginTop: 20,
   },
   floatingButton: {
     position: 'absolute',
@@ -300,7 +304,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#EB7F15',
+    backgroundColor: PRIMARY,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
@@ -310,7 +314,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   qrCodeContainer: {
-    height: 320,
+    height: 400,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -343,7 +347,7 @@ const styles = StyleSheet.create({
   },
   navButton: {
     padding: 8,
-    backgroundColor: '#EB7F15',
+    backgroundColor: PRIMARY,
     borderRadius: 8,
   },
   navButtonText: {
