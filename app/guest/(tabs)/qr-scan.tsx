@@ -136,6 +136,7 @@ export default function QRScanScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scanneur de QR Code</Text>
+      <Text style={styles.description}> Scanne le QRcode affiché par le vendeur pour régler tes achats en un clin d’œil.</Text>
       <View style={styles.cameraContainer}>
         {isCameraActive && (
           <CameraView
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    paddingTop: 40,
+    paddingTop: 80,
     backgroundColor: 'white',
   },
   title: {
@@ -229,6 +230,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     alignSelf: 'center',
+  },
+  description: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 24,
   },
   cameraContainer: {
     width: '100%',

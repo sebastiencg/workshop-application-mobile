@@ -237,7 +237,6 @@ export default function HomeScreen() {
         <Pressable style={styles.modalBackdrop} onPress={() => setModalVisible(false)}>
           <Pressable style={styles.modalView} onPress={(e) => e.stopPropagation()}>
             <Text style={styles.modalName}>{selectedStand?.name}</Text>
-            <Text>{selectedStand?.description}</Text>
             <Pressable
               style={styles.seeMoreButton}
               onPress={() =>
@@ -261,8 +260,8 @@ export default function HomeScreen() {
       >
         <Pressable style={styles.modalBackdrop} onPress={() => setConcertModalVisible(false)}>
           <Pressable style={styles.modalView} onPress={(e) => e.stopPropagation()}>
-            <Text style={styles.modalName}>{selectedConcert?.title}</Text>
-            <Text>{selectedConcert?.horaire}</Text>
+            <Text style={styles.modalName}>Scène : {selectedConcert?.title}</Text>
+            <Text style={styles.modalDescription}>{selectedConcert?.horaire}</Text>
             <Pressable
               style={styles.seeMoreButton}
               onPress={() =>
@@ -315,10 +314,14 @@ const styles = StyleSheet.create({
   modalName: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+  modalDescription: {
+    textAlign: 'center',
   },
   seeMoreButton: {
-    marginTop: 16,
+    marginVertical: 20,
     paddingVertical: 12,
     paddingHorizontal: 20,
     backgroundColor: PRIMARY,

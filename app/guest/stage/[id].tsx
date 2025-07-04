@@ -1,57 +1,65 @@
-import React from 'react'
-import { StyleSheet, Image, View, FlatList, Pressable } from 'react-native'
+import React from 'react';
+import { StyleSheet, Image, View } from 'react-native';
 
-import ParallaxScrollView from '@/components/ParallaxScrollView'
-import { ThemedView } from '@/components/ThemedView'
-import { ThemedText } from '@/components/ThemedText'
-import { router } from 'expo-router'
-import { IconSymbol } from '@/components/ui/IconSymbol'
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 const setSchedule = [
-  { time: '14:00', artist: 'DJ Mirage' },
-  { time: '15:00', artist: 'DJ Mirage' },
+  { time: '10:00', artist: 'DJ Mirage' },
+  { time: '11:30', artist: 'DJ Mirage' },
   { time: '16:30', artist: 'DJ Mirage' },
   { time: '18:00', artist: 'DJ Mirage' },
   { time: '21:00', artist: 'DJ Mirage' },
   { time: '22:00', artist: 'DJ Mirage' },
-]
+];
 
 const toMinutes = (t: string) => {
-  const [h, m] = t.split(':').map(Number)
-  return h * 60 + m
-}
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+};
 
 export default function ProfileScreen() {
-  const now = new Date()
-  const nowMinutes = now.getHours() * 60 + now.getMinutes()
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
   const currentIndex = setSchedule.findIndex((slot, i) => {
-    const start = toMinutes(slot.time)
-    const end = i < setSchedule.length - 1 ? toMinutes(setSchedule[i + 1].time) : 24 * 60
-    return nowMinutes >= start && nowMinutes < end
-  })
+    const start = toMinutes(slot.time);
+    const end = i < setSchedule.length - 1 ? toMinutes(setSchedule[i + 1].time) : 24 * 60;
+    return nowMinutes >= start && nowMinutes < end;
+  });
 
-  const renderItem = ({ item, index }: { item: (typeof setSchedule)[0]; index: number }) => {
-    const isCurrent = index === currentIndex
+  const renderPlanningItem = (item: (typeof setSchedule)[0], index: number) => {
+    const isCurrent = index === currentIndex;
 
     return (
-      <View style={styles.timelineRow}>
+      <View key={item.time} style={styles.timelineRow}>
         {index !== setSchedule.length - 1 && (
-          <View style={[styles.verticalLine, isCurrent && styles.currentVerticalLine]} />
+          <View
+            style={[
+              styles.verticalLine,
+              isCurrent && styles.currentVerticalLine,
+            ]}
+          />
         )}
 
         <View style={[styles.bullet, isCurrent && styles.currentBullet]} />
 
         <View style={[styles.card, isCurrent && styles.currentCard]}>
-          <ThemedText style={[styles.time, isCurrent && styles.currentTime]}>
-            {item.time}
-          </ThemedText>
-          <ThemedText style={[styles.artist, isCurrent && styles.currentArtist]}>
-            {item.artist}
-          </ThemedText>
+          <IconSymbol size={28} name="music" color={PRIMARY} style={[styles.icon, isCurrent && styles.currentIcon]} />
+          <View>
+            <ThemedText style={[styles.time, isCurrent && styles.currentTime]}>
+              {item.time}
+            </ThemedText>
+            <ThemedText style={[styles.artist, isCurrent && styles.currentArtist]}>
+              {item.artist}
+            </ThemedText>
+          </View>
+
         </View>
       </View>
-    )
-  }
+    );
+  };
 
   return (
     <ParallaxScrollView
@@ -64,44 +72,28 @@ export default function ProfileScreen() {
           style={styles.headerImage}
         />
       }
-      headerBackgroundColor={{
-        dark: '',
-        light: '',
-      }}
+      redirect="/guest/(tabs)"
+      redirectText="retourner à la carte"
+      headerTitle="Sceneneenne"
     >
-      <Pressable onPress={() => router.push('/guest/(tabs)')} style={styles.flexRow}>
-        <IconSymbol name={'chevron.left'} color={'#000'} />
-        <ThemedText style={styles.backToHome}> retour à la carte</ThemedText>
-      </Pressable>
-
-      <ThemedView>
-        <ThemedText type="title" style={styles.title}>
-          Scène Electro House
-        </ThemedText>
-      </ThemedView>
-
       <ThemedText style={styles.description}>
-        Plonge au cœur d’un tourbillon de basses percutantes et de drops survoltés ! La scène
-        Electro House du festival fait vibrer les foules avec des sets explosifs, des lumières
-        stroboscopiques et une énergie sans relâche. Prépare-toi à danser, sauter, et te perdre dans
+        Plonge au cœur d’un tourbillon de basses percutantes et de drops survoltés ! La scène
+        Electro House du festival fait vibrer les foules avec des sets explosifs, des lumières
+        stroboscopiques et une énergie sans relâche. Prépare‑toi à danser, sauter, et te perdre dans
         le rythme effréné de l’électro.
       </ThemedText>
 
-      <FlatList
-        data={setSchedule}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.time}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+      <ThemedView style={styles.listContent}>
+        {setSchedule.map(renderPlanningItem)}
+      </ThemedView>
     </ParallaxScrollView>
-  )
+  );
 }
 
-const BULLET_SIZE = 12
-const LINE_WIDTH = 2
-const PRIMARY = '#EB7F15'
-const SECONDARY = '#FCF6DF'
+const BULLET_SIZE = 12;
+const LINE_WIDTH = 2;
+const PRIMARY = '#EB7F15';
+const SECONDARY = "#FCF6DF";
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -109,23 +101,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  flexRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  backToHome: {
-    color: '#000',
-  },
-  title: {
-    paddingVertical: 16,
-    textAlign: 'center',
-  },
+
   description: {
     color: '#000',
   },
 
-  listContent: { paddingVertical: 24 },
+  listContent: {
+    paddingVertical: 24,
+    backgroundColor: '#fff'
+  },
 
   timelineRow: {
     flexDirection: 'row',
@@ -141,9 +125,7 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#000',
   },
-  currentVerticalLine: {
-    display: 'none',
-  },
+  currentVerticalLine: { display: 'none' },
 
   bullet: {
     position: 'absolute',
@@ -167,8 +149,18 @@ const styles = StyleSheet.create({
   },
   currentCard: {
     borderWidth: 2,
-    borderColor: PRIMARY,
-    backgroundColor: PRIMARY,
+    borderColor: SECONDARY,
+    backgroundColor: SECONDARY,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  icon:{
+    display: 'none'
+  },
+  currentIcon:{
+    display: 'block',
+    marginRight: 20,
   },
 
   time: {
@@ -177,7 +169,7 @@ const styles = StyleSheet.create({
     color: PRIMARY,
   },
   currentTime: {
-    color: '#fff',
+    color: PRIMARY,
     marginTop: 10,
   },
   artist: {
@@ -185,6 +177,6 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   currentArtist: {
-    color: '#fff',
+    color: PRIMARY,
   },
-})
+});

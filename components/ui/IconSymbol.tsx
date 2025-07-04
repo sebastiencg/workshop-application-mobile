@@ -28,6 +28,7 @@ const MAPPING = {
   map: 'map',
   banknote: 'food-bank',
   'chevron.left': 'chevron-left',
+  'music': 'music-note',
 } as IconMapping
 
 /**
