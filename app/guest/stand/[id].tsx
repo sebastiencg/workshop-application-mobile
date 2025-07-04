@@ -82,6 +82,8 @@ export default function ProfileScreen() {
         gourmandes.
       </ThemedText>
 
+      <View style={styles.menuList}>{menu.map(renderMenuItem)}</View>
+
     </ParallaxScrollView>
   );
 }
