@@ -37,9 +37,17 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
       headers,
     }
 
+    console.log(finalUrl)
+    console.log(fetchOptions)
+
     const response = await fetch(finalUrl, fetchOptions)
 
     const responseData = await response.json()
+
+
+    console.log(finalUrl)
+    console.log(fetchOptions)
+    console.log(responseData)
 
     if (!response.ok) {
       throw responseData

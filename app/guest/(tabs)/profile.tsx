@@ -29,7 +29,7 @@ export default function ProfileScreen() {
   const { user, setUser } = useUser();
   const [ticketModalVisible, setTicketModalVisible] = useState(false);
   const [customModalVisible, setCustomModalVisible] = useState(false);
-  const balance = user?.token;
+  const [balance , setBalance] = useState(user?.token) ;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -56,50 +56,64 @@ export default function ProfileScreen() {
     { id: "6", place: "Saucisse Bar", amount: 25, time: "13:05" },
   ];
 
-  const prepareAndOpenPaymentSheet = async (
-    amountCoins: number,
-    type: string,
-  ) => {
+  const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string) => {
     try {
-      const data = await fetcherPost("/payment-intent-ticket", {
+      const data = await fetcherPost('/payment-intent-ticket', {
         amountCoins,
         type,
         numberOfDays : 1
-      });
-      console.log(data);
-      const { paymentIntent, ephemeralKey, customer, cartId } = data;
+      })
+      console.log(data)
+      const { paymentIntent, ephemeralKey, customer, cartId } = data
 
       const { error: initError } = await initPaymentSheet({
-        merchantDisplayName: "Saucisse Bar",
+        merchantDisplayName: 'Saucisse Bar',
         customerId: customer,
         customerEphemeralKeySecret: ephemeralKey,
         paymentIntentClientSecret: paymentIntent,
         allowsDelayedPaymentMethods: false,
-      });
+      })
 
       if (initError) {
-        Alert.alert("Stripe", initError.message);
-        return;
+        Alert.alert('Stripe', initError.message)
+        return
       }
 
       const { error: presentError } = await presentPaymentSheet({
-        //@ts-ignore
         clientSecret: paymentIntent,
-      });
+      })
 
       if (presentError) {
-          if ((presentError as any).code !== 'Canceled') {
+        if ((presentError as unknown as PaymentSheetError).code !== 'Canceled') {
           Alert.alert('Échec', presentError.message)
         }
       } else {
         Alert.alert('Succès', 'Paiement effectué !')
-        //await fetcherPost('/coins/credit', {cartId, amountCoins})
+        if (type === "token") {
+          try {
+            const profileData = await fetcher('/profile/'); // récupérer les données de profil
+            if (profileData?.token) { // vérifier si un token est disponible dans la réponse
+              setUser((prevUser: User | null) => {
+                setBalance(profileData.token,)
+                if (!prevUser) return null;
+                return {
+                  ...prevUser,
+                  token: profileData.token, // mettre à jour le nombre de jetons dans l'état utilisateur
+                };
+              });
+            }
+          } catch (error) {
+            console.error("Erreur lors de la récupération des tokens:", error);
+            Alert.alert("Erreur", "Impossible de récupérer les jetons, veuillez réessayer.");
+          }
+        }
       }
     } catch (err: any) {
-      console.error(err);
-      Alert.alert("Stripe", err.message || "Erreur inconnue");
+      console.error(err)
+      Alert.alert('Stripe', err.message || 'Erreur inconnue')
     }
-  };
+  }
+
 
   const handleLogout = async () => {
     await AsyncStorage.clear();
