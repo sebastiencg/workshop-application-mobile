@@ -62,3 +62,4 @@ android
 .metro-health-check*
 
 package-lock.json
+build**

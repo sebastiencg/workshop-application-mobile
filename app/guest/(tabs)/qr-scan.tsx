@@ -120,7 +120,7 @@ export default function QRScanScreen() {
   const nextTicket = () => {
     if (user?.ofUser?.tickets && user.ofUser.tickets.length > 0) {
       setCurrentQRIndex((prevIndex) =>
-        prevIndex === user?.ofUser?.tickets.length - 1 ? 0 : prevIndex + 1
+        prevIndex === user.ofUser.tickets!.length - 1 ? 0 : prevIndex + 1
       )
     }
   }
@@ -128,7 +128,7 @@ export default function QRScanScreen() {
   const prevTicket = () => {
     if (user?.ofUser?.tickets && user.ofUser.tickets.length > 0) {
       setCurrentQRIndex((prevIndex) =>
-        prevIndex === 0 ? user?.ofUser?.tickets.length - 1 : prevIndex - 1
+        prevIndex === 0 ? user.ofUser.tickets!.length - 1 : prevIndex - 1
       )
     }
   }

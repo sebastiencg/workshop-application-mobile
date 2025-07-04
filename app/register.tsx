@@ -13,6 +13,7 @@ import {
   View,
   ScrollView,
 } from 'react-native'
+// @ts-ignore
 import logoImage from '@/assets/images/logo.png'
 import { fetcherPost } from '@/services/apiService'
 

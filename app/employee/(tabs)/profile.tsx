@@ -21,7 +21,7 @@ export default function ProfileScreen() {
       <View style={styles.inputRow}>
         <ThemedText type="title">Profil employé</ThemedText>
         <Pressable onPress={handleLogout}>
-          <IconSymbol size={28} name="logout" color={'black'} />
+          <IconSymbol size={28} name="logo.xbox" color={'black'} />
         </Pressable>
       </View>
 

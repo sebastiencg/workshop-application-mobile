@@ -6,7 +6,15 @@ import { ThemedText } from '@/components/ThemedText'
 import { router } from 'expo-router'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 
-const menu = [
+type MenuItem = {
+  id: string
+  name: string
+  description: string
+  price: string
+  image: string
+}
+
+const menu: MenuItem[] = [
   {
     id: '1',
     name: 'Burger maison',
@@ -42,7 +50,7 @@ const menu = [
 ]
 
 export default function ProfileScreen() {
-  const renderMenuItem = (item) => (
+  const renderMenuItem = (item: MenuItem) => (
     <View key={item.id} style={styles.menuItem}>
       <Image source={{ uri: item.image }} style={styles.menuImage} />
       <View style={styles.menuInfo}>

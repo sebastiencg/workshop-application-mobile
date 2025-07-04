@@ -2,7 +2,7 @@ import * as Location from 'expo-location'
 import React, { useEffect, useRef, useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MapView, { LatLng, Marker, Polygon } from 'react-native-maps'
-import { router } from "expo-router";
+import { router } from 'expo-router'
 
 type Stand = {
   id: number
@@ -243,7 +243,7 @@ export default function HomeScreen() {
               onPress={() =>
                 router.push({
                   pathname: '/guest/stand/[id]',
-                  params: { id: selectedStand?.id },
+                  params: { id: String(selectedStand?.id) },
                 })
               }
             >
@@ -268,7 +268,7 @@ export default function HomeScreen() {
               onPress={() =>
                 router.push({
                   pathname: '/guest/stage/[id]',
-                  params: { id: selectedConcert?.id },
+                  params: { id: String(selectedConcert?.id) },
                 })
               }
             >
