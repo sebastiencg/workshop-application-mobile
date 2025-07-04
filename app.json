@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#fff"
       },
       "edgeToEdgeEnabled": true,
       "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
@@ -33,7 +33,7 @@
           "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#fff"
         }
       ],
       [

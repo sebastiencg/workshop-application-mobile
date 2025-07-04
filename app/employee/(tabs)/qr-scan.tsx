@@ -80,7 +80,8 @@ export default function QRScanScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Billeterie</Text>
+      <Text style={styles.title}>Billetterie</Text>
+      <Text style={styles.description}>Flash le QR code du visiteur et laisse la magie opérer. Accès garanti (ou pas) !</Text>
       <View style={styles.cameraContainer}>
         {isCameraActive && (
           <CameraView
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    paddingTop: 40,
+    paddingTop: 80,
     backgroundColor: 'white',
   },
   title: {
@@ -175,6 +176,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     alignSelf: 'center',
+  },
+  description: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 24,
   },
   cameraContainer: {
     width: '100%',

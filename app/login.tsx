@@ -165,6 +165,10 @@ const LoginScreen = () => {
   )
 }
 
+const DARK_GREY = '#333';
+const PRIMARY = '#EB7F15';
+const SECONDARY = '#FCF6DF'
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -179,7 +183,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: SECONDARY,
     padding: 10,
     borderRadius: 20,
     marginVertical: 10,
@@ -195,12 +199,12 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   button: {
-    backgroundColor: '#EB7F15',
+    backgroundColor: PRIMARY,
     padding: 15,
     borderRadius: 30,
     width: '80%',
     alignItems: 'center',
-    marginTop: 20,
+    marginVertical: 20,
   },
   buttonText: {
     color: 'white',
@@ -228,11 +232,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: '#5e5e5e',
+    color: DARK_GREY,
   },
   footerLinkText: {
     fontSize: 14,
-    color: '#EB7F15',
+    color: PRIMARY,
     fontWeight: 'bold',
   },
 })

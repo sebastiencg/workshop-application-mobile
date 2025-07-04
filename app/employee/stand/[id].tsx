@@ -9,11 +9,13 @@ import {
   ActivityIndicator,
   Modal,
   SafeAreaView,
-  TextInput,
-} from 'react-native'
-import { useLocalSearchParams, useNavigation } from 'expo-router'
+  TextInput, Pressable
+} from "react-native";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons } from '@expo/vector-icons'
 import QRCode from 'react-native-qrcode-svg'
+import { ThemedText } from "@/components/ThemedText";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 type StandItem = {
   id: number
@@ -28,28 +30,28 @@ const mockStandItems: Record<string, StandItem[]> = {
     {
       id: 1,
       name: 'Pinte de bière blonde',
-      description: 'Bière blonde artisanale locale - 50cl',
+      description: 'Bière blonde artisanale locale',
       price: 5,
       image: 'https://img.icons8.com/?size=150&id=gvSTbbYdFYYL',
     },
     {
       id: 2,
       name: 'Pinte de bière ambrée',
-      description: 'Bière ambrée avec des notes caramélisées - 50cl',
+      description: 'Bière ambrée avec des notes caramélisées',
       price: 6,
       image: 'https://img.icons8.com/?size=150&id=gvSTbbYdFYYL',
     },
     {
       id: 3,
       name: 'Demi de bière IPA',
-      description: 'IPA houblonnée et fruitée - 25cl',
+      description: 'IPA houblonnée et fruitée',
       price: 4,
       image: 'https://img.icons8.com/?size=150&id=gvSTbbYdFYYL',
     },
     {
       id: 4,
       name: 'Bière sans alcool',
-      description: 'Bière artisanale sans alcool - 33cl',
+      description: 'Bière artisanale sans alcool',
       price: 4,
       image: 'https://img.icons8.com/?size=150&id=gvSTbbYdFYYL',
     },
@@ -261,26 +263,22 @@ export default function StandDetailScreen() {
   if (!stand) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Stand non trouvé</Text>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Text style={styles.backButtonText}>Retour</Text>
-        </TouchableOpacity>
+        <Pressable onPress={() => router.push('/employee/(tabs)')} style={styles.flexRow}>
+          <IconSymbol name={'chevron.left'} color={'#000'} />
+          <ThemedText style={styles.backToHome}> retour </ThemedText>
+        </Pressable>
       </View>
     )
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Ionicons name="arrow-back" size={24} color="#1e90ff" />
-        </TouchableOpacity>
-        <Text style={styles.title}>{stand.name}</Text>
-      </View>
+      <Pressable onPress={() => router.push('/employee/(tabs)')} style={styles.flexRow}>
+        <IconSymbol name={'chevron.left'} color={'#000'} />
+        <ThemedText style={styles.backToHome}> retour </ThemedText>
+      </Pressable>
+      <ThemedText type="title" style={styles.title}>{stand.name}</ThemedText>
 
-      <Text style={styles.description}>{stand.description}</Text>
-
-      <Text style={styles.sectionTitle}>Articles disponibles</Text>
 
       {standItems.length === 0 ? (
         <View style={styles.emptyState}>
@@ -294,20 +292,21 @@ export default function StandDetailScreen() {
         >
           {standItems.map((item) => (
             <View key={item.id} style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Image source={{ uri: item.image }} style={styles.cardImage} resizeMode="contain" />
-              </View>
-              <View style={styles.cardBody}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
-                <Text style={styles.cardDescription}>{item.description}</Text>
-                <Text style={styles.cardPrice}>{item.price} jetons</Text>
+              <View style={styles.cardContent}>
+                <View style={styles.cardImageContainer}>
+                  <Image source={{ uri: item.image }} style={styles.cardImage} resizeMode="contain" />
+                </View>
+                <View style={styles.cardBody}>
+                  <Text style={styles.cardTitle}>{item.name}</Text>
+                  <Text style={styles.cardDescription}>{item.description}</Text>
+                </View>
               </View>
               <View style={styles.cardFooter}>
                 <TouchableOpacity
                   style={styles.actionButton}
                   onPress={() => handleManageItem(item)}
                 >
-                  <Text style={styles.actionButtonText}>Voir l'article</Text>
+                  <Text style={styles.actionButtonText}>Choisir l'article</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -418,29 +417,23 @@ export default function StandDetailScreen() {
   )
 }
 
+const DARK_GREY = '#333';
+const LIGHT_GREY = '#666';
+const PRIMARY = '#EB7F15';
+const SECONDARY = '#FCF6DF'
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 16,
-  },
-  backButton: {
-    padding: 8,
-  },
-  backButtonText: {
-    color: '#1e90ff',
-    fontWeight: 'bold',
+    padding: 24,
+    gap: 24,
+    marginTop: 48,
+    height: "100%",
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginLeft: 8,
+    paddingVertical: 16,
+    textAlign: 'center',
   },
   description: {
     fontSize: 16,
@@ -462,39 +455,44 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
     overflow: 'hidden',
   },
-  cardHeader: {
-    position: 'relative',
-    height: 120,
+  // Nouveau layout horizontal
+  cardContent: {
+    flexDirection: 'row',
+    padding: 16,
+  },
+  cardImageContainer: {
+    width: 80,
+    height: 80,
     backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    marginRight: 16,
+    overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
     height: '100%',
   },
   cardBody: {
-    padding: 16,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   cardDescription: {
     fontSize: 14,
     color: '#666',
     marginBottom: 8,
+    flex: 1,
   },
   cardPrice: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#1e90ff',
+    color: PRIMARY,
   },
   cardFooter: {
     borderTopWidth: 1,
@@ -503,10 +501,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   actionButton: {
-    backgroundColor: '#1e90ff',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: PRIMARY,
+    alignItems: 'center',
+    borderRadius: 8,
+    width: '100%',
   },
   actionButtonText: {
     color: 'white',
@@ -613,12 +613,12 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 40,
     marginRight: 10,
   },
   selectedSize: {
-    backgroundColor: '#1e90ff',
-    borderColor: '#1e90ff',
+    backgroundColor: PRIMARY,
+    borderColor: PRIMARY,
   },
   sizeButtonText: {
     fontSize: 16,
@@ -645,10 +645,10 @@ const styles = StyleSheet.create({
   priceValue: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#1e90ff',
+    color: DARK_GREY,
   },
   generateQRButton: {
-    backgroundColor: '#1e90ff',
+    backgroundColor: PRIMARY,
     borderRadius: 8,
     paddingVertical: 15,
     alignItems: 'center',
@@ -670,5 +670,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
+  },
+  flexRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backToHome: {
+    color: '#000',
   },
 })
