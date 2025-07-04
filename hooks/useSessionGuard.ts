@@ -21,7 +21,7 @@ export const useSessionGuard = () => {
 
         const res = await fetcher('/user')
         if (res?.data) {
-          setUser(res.data)
+          setUser(res.data);
         } else {
           throw new Error('User null')
         }

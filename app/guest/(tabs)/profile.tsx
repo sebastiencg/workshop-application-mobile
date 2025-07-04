@@ -21,7 +21,7 @@ import {
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { IconSymbol } from '@/components/ui/IconSymbol'
-import { useUser } from '@/contexts/UserContext'
+import { User, useUser } from "@/contexts/UserContext";
 import { fetcher, fetcherPost } from '@/services/apiService'
 
 export default function ProfileScreen() {
@@ -48,7 +48,6 @@ export default function ProfileScreen() {
   const prepareAndOpenPaymentSheet = async (amountCoins: number, type: string) => {
     try {
       const data = await fetcherPost('/payment-intent-ticket', { amountCoins, type })
-      console.log(data)
       const { paymentIntent, ephemeralKey, customer, cartId } = data
 
       const { error: initError } = await initPaymentSheet({
@@ -74,7 +73,23 @@ export default function ProfileScreen() {
         }
       } else {
         Alert.alert('Succès', 'Paiement effectué !')
-        //await fetcherPost('/coins/credit', {cartId, amountCoins})
+        if (type === "token") {
+          try {
+            const profileData = await fetcher('/profile/'); // récupérer les données de profil
+            if (profileData?.token) { // vérifier si un token est disponible dans la réponse
+              setUser((prevUser: User | null) => {
+                if (!prevUser) return null;
+                return {
+                  ...prevUser,
+                  token: profileData.token, // mettre à jour le nombre de jetons dans l'état utilisateur
+                };
+              });
+            }
+          } catch (error) {
+            console.error("Erreur lors de la récupération des tokens:", error);
+            Alert.alert("Erreur", "Impossible de récupérer les jetons, veuillez réessayer.");
+          }
+        }
       }
     } catch (err: any) {
       console.error(err)
@@ -84,8 +99,8 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await AsyncStorage.clear()
-    setUser(null)
-    router.replace('/login')
+    setUser(null);
+    router.replace("/login");
   }
   const confirmLogout = () => {
     Alert.alert(

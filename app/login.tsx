@@ -58,8 +58,8 @@ const LoginScreen = () => {
         await AsyncStorage.removeItem('hasSession')
         throw new Error('User null')
       }
-      setUser(user)
-      console.info(user.ofUser.roles)
+      setUser(user);
+      console.info(user.ofUser.roles);
 
       router.replace('/guest/(tabs)')
     } catch (error: unknown) {
@@ -132,8 +132,8 @@ const LoginScreen = () => {
               billets: [],
             },
           }
-          setUser(mockUser)
-          AsyncStorage.setItem('hasSession', 'true')
+          setUser(mockUser);
+          AsyncStorage.setItem("hasSession", "true");
           AsyncStorage.setItem('token', 'dev-mode-token')
           router.replace('/guest/(tabs)')
         }}

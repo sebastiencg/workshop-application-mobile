@@ -16,8 +16,8 @@ export interface User {
 }
 
 interface UserContextType {
-  user: User | null
-  setUser: (user: User | null) => void
+  user: User | null;
+  setUser: (user: (prevUser: User | null) => null | { token: any }) => void;
 }
 
 const defaultValue: UserContextType = {

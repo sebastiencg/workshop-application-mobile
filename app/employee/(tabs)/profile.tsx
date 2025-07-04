@@ -12,8 +12,8 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await AsyncStorage.clear()
-    setUser(null)
-    router.replace('/login')
+    setUser(null);
+    router.replace("/login");
   }
 
   return (
